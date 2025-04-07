@@ -43,6 +43,12 @@ android {
 
 dependencies {
 
+    val hilt_version = "2.51.1"
+
+    implementation ("com.google.dagger:hilt-android:$hilt_version")
+    annotationProcessor ("com.google.dagger:hilt-compiler:$hilt_version")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
     implementation("androidx.credentials:credentials:1.5.0")
     implementation ("androidx.credentials:credentials-play-services-auth:1.5.0")
     implementation ("com.google.android.libraries.identity.googleid:googleid:1.1.1")
