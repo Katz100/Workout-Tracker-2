@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +15,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,10 +29,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chatapplication.ui.theme.ChatApplicationTheme
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+import dagger.hilt.android.AndroidEntryPoint
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.Google
@@ -37,12 +44,15 @@ import io.github.jan.supabase.auth.providers.builtin.IDToken
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.exceptions.RestException
 import io.github.jan.supabase.postgrest.Postgrest
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.security.MessageDigest
 import java.util.UUID
+import javax.inject.Inject
 
 const val TAG = "MainApp"
 
+/*
 val supabase = createSupabaseClient(
     supabaseUrl = "https://jcqxxztakmhnpmcapfgr.supabase.co",
     supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpjcXh4enRha21obnBtY2FwZmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM1Mzc5MjAsImV4cCI6MjA1OTExMzkyMH0.mW3CiZwPQi2ZbXJLmcn8l1VbdOXcqjy1G5r_NaDtTaE"
@@ -50,14 +60,23 @@ val supabase = createSupabaseClient(
    install(Auth)
     install(Postgrest)
 }
-
+*/
 //client id: 305595485789-e14aebqncklp862np65f9srgv5390pg4.apps.googleusercontent.com
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var supabaseClient: SupabaseClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         setContent {
+
             ChatApplicationTheme {
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     var username by remember {mutableStateOf("John Doe")}
                     Column(
@@ -66,10 +85,13 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         GoogleSignInButton(
-                            onSignIn = {username = it}
+                            onSignIn = {
+                                username = it
+                            }
                         )
                         Text(text = username)
                     }
+
 
                 }
             }
@@ -77,16 +99,20 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
+
 @Composable
 fun GoogleSignInButton(
     modifier: Modifier = Modifier,
-    onSignIn: (String) -> Unit
+    onSignIn: (String) -> Unit,
+    profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
     val onClick: () -> Unit = {
         Log.e(TAG, "Clicked")
+        profileViewModel.loadProfile("1776e865-ee99-4302-92ad-564acc64c9ca")
         val credentialManager = CredentialManager.create(context)
 
         // Generate a nonce and hash it with sha-256
@@ -115,6 +141,7 @@ fun GoogleSignInButton(
                     context = context,
                 )
 
+
                 val googleIdTokenCredential = GoogleIdTokenCredential
                     .createFrom(result.credential.data)
 
@@ -122,7 +149,7 @@ fun GoogleSignInButton(
 
              //   Log.e(TAG, googleIdToken)
 
-
+                /*
                 supabase.auth.signInWith(IDToken) {
                     idToken = googleIdToken
                     provider = Google
@@ -134,6 +161,8 @@ fun GoogleSignInButton(
                 val userEmail = user?.email ?: "No email"
                 onSignIn(userEmail)
                 Log.e(TAG, userEmail)
+
+                 */
 
             } catch (e: GetCredentialException) {
                 Log.e(TAG, e.toString())
