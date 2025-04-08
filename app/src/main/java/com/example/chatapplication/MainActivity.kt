@@ -102,6 +102,7 @@ fun GoogleSignInButton(
     val onClick: () -> Unit = {
         Log.e(TAG, "Clicked")
         profileViewModel.loadProfile("1776e865-ee99-4302-92ad-564acc64c9ca")
+        profileViewModel.updateDisplayName("1776e865-ee99-4302-92ad-564acc64c9ca", "Test2")
         val credentialManager = CredentialManager.create(context)
 
         // Generate a nonce and hash it with sha-256

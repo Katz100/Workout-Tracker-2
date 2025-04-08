@@ -56,16 +56,46 @@ class ExampleUnitTest {
     @Test
     fun `Get user's display name`() = runTest {
         val profileDto = ProfileDto(
-            id = "1776e865-ee99-4302-92ad-564acc64c9ca",
+            id = "mock-id",
             displayName = "Cody Hopkins"
         )
 
         coEvery { profileRepository.getProfile(any()) } returns profileDto
 
-        viewModel.loadProfile("1776e865-ee99-4302-92ad-564acc64c9ca")
+        viewModel.loadProfile("mock-id")
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertEquals("Cody Hopkins", viewModel.profile.value?.displayName)
+    }
+
+    @Test
+    fun `Change user's display name`() = runTest {
+        // Create mock data
+        val profileDto = ProfileDto(
+            id = "mock-id",
+            displayName = "Cody Hopkins"
+        )
+
+        // expected result
+        val updatedProfileDto = profileDto.copy()
+
+        // Mock repository behavior
+        coEvery { profileRepository.getProfile(any()) } returns profileDto
+        coEvery { profileRepository.updateDisplayName(any(), any()) } answers {
+            // get second argument (Cody)
+            val newName = arg<String>(1)
+            // Return the updated profile with the new display name
+            updatedProfileDto.copy(displayName = newName)
+        }
+
+        viewModel.loadProfile("mock-id")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.updateDisplayName("mock-id", "Cody")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Assert that the display name was updated correctly
+        assertEquals("Cody", viewModel.profile.value?.displayName)
     }
 
 }

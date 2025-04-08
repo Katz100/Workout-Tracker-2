@@ -1,5 +1,6 @@
 package com.example.chatapplication.model
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatapplication.data.dto.ProfileDto
@@ -57,6 +58,7 @@ class ProfileViewModel @Inject constructor(
                 profileRepository.updateDisplayName(userId, newName)
                 // Update local state
                 _profile.value = _profile.value?.copy(displayName = newName)
+                // Log.e(TAG2, _profile.value?.displayName ?: "Error")
             } catch (e: Exception) {
                 _error.value = "Failed to update display name: ${e.message}"
             } finally {
