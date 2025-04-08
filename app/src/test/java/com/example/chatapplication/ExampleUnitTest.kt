@@ -3,6 +3,7 @@ package com.example.chatapplication
 
 import com.example.chatapplication.data.dto.ProfileDto
 import com.example.chatapplication.data.repository.ProfileRepository
+import com.example.chatapplication.model.ProfileViewModel
 
 import io.mockk.coEvery
 
@@ -36,8 +37,6 @@ class ExampleUnitTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setup() {
-
-
         Dispatchers.setMain(testDispatcher)
         profileRepository = mockk()
         viewModel = ProfileViewModel(profileRepository)
@@ -51,7 +50,7 @@ class ExampleUnitTest {
 
     @Test
     fun add() {
-        assertEquals(2, 1 + 1)
+        assertEquals(3, 1 + 1)
     }
 
     @Test

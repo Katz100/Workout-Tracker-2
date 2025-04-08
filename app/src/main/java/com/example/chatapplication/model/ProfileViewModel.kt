@@ -1,6 +1,5 @@
-package com.example.chatapplication
+package com.example.chatapplication.model
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatapplication.data.dto.ProfileDto
