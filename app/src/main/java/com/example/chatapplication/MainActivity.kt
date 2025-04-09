@@ -26,8 +26,9 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.chatapplication.model.ProfileViewModel
+import com.example.chatapplication.viewmodel.ProfileViewModel
 import com.example.chatapplication.ui.theme.ChatApplicationTheme
+import com.example.chatapplication.viewmodel.ConversationViewModel
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
@@ -94,7 +95,8 @@ class MainActivity : ComponentActivity() {
 fun GoogleSignInButton(
     modifier: Modifier = Modifier,
     onSignIn: (String) -> Unit,
-    profileViewModel: ProfileViewModel = hiltViewModel()
+    profileViewModel: ProfileViewModel = hiltViewModel(),
+    con: ConversationViewModel = hiltViewModel()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current

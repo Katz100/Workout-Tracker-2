@@ -1,9 +1,12 @@
 package com.example.chatapplication
 
 
+import com.example.chatapplication.data.dto.ConversationDto
 import com.example.chatapplication.data.dto.ProfileDto
+import com.example.chatapplication.data.repository.ConversationRepository
 import com.example.chatapplication.data.repository.ProfileRepository
-import com.example.chatapplication.model.ProfileViewModel
+import com.example.chatapplication.viewmodel.ConversationViewModel
+import com.example.chatapplication.viewmodel.ProfileViewModel
 
 import io.mockk.coEvery
 
@@ -34,12 +37,20 @@ class ExampleUnitTest {
     private lateinit var profileRepository: ProfileRepository
     private lateinit var viewModel: ProfileViewModel
 
+    private lateinit var conversationRepository: ConversationRepository
+    private lateinit var conversationViewModel: ConversationViewModel
+
+
+
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         profileRepository = mockk()
         viewModel = ProfileViewModel(profileRepository)
+
+        conversationRepository = mockk()
+        conversationViewModel = ConversationViewModel(conversationRepository)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -53,6 +64,21 @@ class ExampleUnitTest {
         assertEquals(2, 1 + 1)
     }
 
+    @Test
+    fun `Get conversation`() = runTest {
+        val conversationDto = ConversationDto(
+            id = "mock-id",
+            conversationName = "con1",
+            createdAt = "4/8/2025"
+        )
+
+        coEvery { conversationRepository.getConversation(any()) } returns conversationDto
+
+        conversationViewModel.loadConversation("mock-id")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals("con1", conversationViewModel.conversation.value?.conversationName)
+    }
     @Test
     fun `Get user's display name`() = runTest {
         val profileDto = ProfileDto(
