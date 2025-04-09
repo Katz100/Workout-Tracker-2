@@ -2,10 +2,13 @@ package com.example.chatapplication
 
 
 import com.example.chatapplication.data.dto.ConversationDto
+import com.example.chatapplication.data.dto.MessageDto
 import com.example.chatapplication.data.dto.ProfileDto
 import com.example.chatapplication.data.repository.ConversationRepository
+import com.example.chatapplication.data.repository.MessageRepository
 import com.example.chatapplication.data.repository.ProfileRepository
 import com.example.chatapplication.viewmodel.ConversationViewModel
+import com.example.chatapplication.viewmodel.MessageViewModel
 import com.example.chatapplication.viewmodel.ProfileViewModel
 
 import io.mockk.coEvery
@@ -40,6 +43,9 @@ class ExampleUnitTest {
     private lateinit var conversationRepository: ConversationRepository
     private lateinit var conversationViewModel: ConversationViewModel
 
+    private lateinit var messageRepository: MessageRepository
+    private lateinit var messageViewModel: MessageViewModel
+
 
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -51,6 +57,9 @@ class ExampleUnitTest {
 
         conversationRepository = mockk()
         conversationViewModel = ConversationViewModel(conversationRepository)
+
+        messageRepository = mockk()
+        messageViewModel = MessageViewModel(messageRepository)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -62,6 +71,25 @@ class ExampleUnitTest {
     @Test
     fun add() {
         assertEquals(2, 1 + 1)
+    }
+
+    @Test
+    fun `Get message`() = runTest {
+        val messageDto = MessageDto(
+            id = "mock-id",
+            conversationId = "mock-con-id",
+            senderId = "mock-send-id",
+            body = "hi",
+            createdAt = "4/9/2025",
+            read = false
+        )
+
+        coEvery { messageRepository.getMessage(any()) } returns messageDto
+
+        messageViewModel.loadMessage("fake-id")
+        testDispatcher.scheduler.advanceUntilIdle()
+        val result = messageViewModel.message.value
+        assertEquals(messageDto.body, result?.body)
     }
 
     @Test
