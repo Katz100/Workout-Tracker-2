@@ -3,6 +3,7 @@ package com.example.chatapplication.data.dto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+//allow id and created_at to be null to auto gen uuid/date in database
 @Serializable
 data class MessageDto(
 

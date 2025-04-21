@@ -21,4 +21,8 @@ class MessageRepositoryImpl @Inject constructor(
             }.decodeSingle<MessageDto>()
         }
     }
+
+    override suspend fun sendMessage(message: MessageDto) {
+        postgrest.from("message").insert(message)
+    }
 }

@@ -47,4 +47,21 @@ class ConversationViewModel @Inject constructor(
             }
         }
     }
+    private fun Conversation.asDto() : ConversationDto {
+        return ConversationDto(
+            id = this.id,
+            conversationName = this.conversationName,
+            createdAt = this.createdAt
+        )
+    }
+    fun createConversation(conversation: Conversation) {
+        viewModelScope.launch {
+            try {
+                conversationRepository.createConversation(conversation.asDto())
+                _conversation.value = conversation
+            } catch (e: Exception) {
+                _error.value = "Failed to create conversation: ${e.message}"
+            }
+        }
+    }
 }

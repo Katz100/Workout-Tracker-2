@@ -12,6 +12,7 @@ import javax.inject.Inject
 class ConversationRepositoryImpl @Inject constructor(
     private val postgrest: Postgrest
 ) : ConversationRepository {
+
     override suspend fun getConversation(id: String): ConversationDto {
         return withContext(Dispatchers.IO) {
             postgrest.from("conversation").select(columns = Columns.list("id", "name", "created_at")) {
@@ -19,6 +20,12 @@ class ConversationRepositoryImpl @Inject constructor(
                     eq("id", id)
                 }
             }.decodeSingle<ConversationDto>()
+        }
+    }
+
+    override suspend fun createConversation(conversation: ConversationDto) {
+        withContext(Dispatchers.IO) {
+            postgrest.from("conversation").insert(conversation)
         }
     }
 }

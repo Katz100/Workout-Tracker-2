@@ -26,9 +26,12 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.chatapplication.data.dto.MessageDto
+import com.example.chatapplication.domain.model.Message
 import com.example.chatapplication.viewmodel.ProfileViewModel
 import com.example.chatapplication.ui.theme.ChatApplicationTheme
 import com.example.chatapplication.viewmodel.ConversationViewModel
+import com.example.chatapplication.viewmodel.MessageViewModel
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
@@ -96,7 +99,8 @@ fun GoogleSignInButton(
     modifier: Modifier = Modifier,
     onSignIn: (String) -> Unit,
     profileViewModel: ProfileViewModel = hiltViewModel(),
-    con: ConversationViewModel = hiltViewModel()
+    con: ConversationViewModel = hiltViewModel(),
+    message: MessageViewModel = hiltViewModel()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -106,6 +110,18 @@ fun GoogleSignInButton(
         profileViewModel.loadProfile("1776e865-ee99-4302-92ad-564acc64c9ca")
         profileViewModel.updateDisplayName("1776e865-ee99-4302-92ad-564acc64c9ca", "Test2")
         val credentialManager = CredentialManager.create(context)
+        val mes = Message(
+            id = "1776e865-ee99-4302-92ad-564acc64c9cb",
+            conversationId = "8ffe5cfd-e5da-4710-9a00-24940dfd9276",
+            senderId = "1776e865-ee99-4302-92ad-564acc64c9ca",
+            body = "hi",
+            createdAt = "4/9/2025",
+            read = false
+        )
+
+        message.sendMessage(mes)
+
+
 
         // Generate a nonce and hash it with sha-256
         // Providing a nonce is optional but recommended

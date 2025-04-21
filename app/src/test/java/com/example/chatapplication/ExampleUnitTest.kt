@@ -7,11 +7,14 @@ import com.example.chatapplication.data.dto.ProfileDto
 import com.example.chatapplication.data.repository.ConversationRepository
 import com.example.chatapplication.data.repository.MessageRepository
 import com.example.chatapplication.data.repository.ProfileRepository
+import com.example.chatapplication.domain.model.Conversation
 import com.example.chatapplication.viewmodel.ConversationViewModel
 import com.example.chatapplication.viewmodel.MessageViewModel
 import com.example.chatapplication.viewmodel.ProfileViewModel
+import io.mockk.Runs
 
 import io.mockk.coEvery
+import io.mockk.just
 
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -71,6 +74,22 @@ class ExampleUnitTest {
     @Test
     fun add() {
         assertEquals(2, 1 + 1)
+    }
+
+    @Test
+    fun `Create new conversation`() = runTest {
+        val conversation = Conversation(
+            id = "some-id",
+            conversationName = "our convo",
+            createdAt = "4/21/2025"
+        )
+
+        coEvery { conversationRepository.createConversation(any()) } just Runs
+
+        conversationViewModel.createConversation(conversation)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(conversation, conversationViewModel.conversation.value)
     }
 
     @Test
