@@ -43,7 +43,7 @@ jobs:
     - name: Run intrumentation tests
       uses: reactivecircus/android-emulator-runner@v2
       with:
-        api-level: 35
+        api-level: 34
         script: ./gradlew connectedDebugAndroidTest 
 
     - name: Upload instrumentation report
