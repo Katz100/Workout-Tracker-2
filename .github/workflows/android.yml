@@ -39,3 +39,15 @@ jobs:
       with:
         name: unit_test_report
         path: app/build/reports/tests/testDebugUnitTest/
+
+    - name: Run intrumentation tests
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 29
+        script: ./gradlew connectedCheck
+
+    - name: Upload instrumentation report
+      uses: actions/upload-artifact@v4
+      with:
+        name: instrumentation_test_report
+        path: app/build/reports/androidTests/connected/
