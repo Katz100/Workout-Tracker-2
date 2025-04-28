@@ -13,6 +13,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,17 +28,21 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chatapplication.data.dto.MessageDto
+import com.example.chatapplication.di.SupabaseModule
 import com.example.chatapplication.domain.model.Message
 import com.example.chatapplication.viewmodel.ProfileViewModel
 import com.example.chatapplication.ui.theme.ChatApplicationTheme
 import com.example.chatapplication.viewmodel.ConversationViewModel
 import com.example.chatapplication.viewmodel.MessageViewModel
+import com.example.chatapplication.viewmodel.SignInViewModel
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.exceptions.RestException
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.security.MessageDigest
 import java.util.UUID
@@ -71,7 +76,7 @@ class MainActivity : ComponentActivity() {
             ChatApplicationTheme {
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    var username by remember {mutableStateOf("John Doe")}
+
                     Column(
                         modifier = Modifier.padding(innerPadding),
                         verticalArrangement = Arrangement.Center,
@@ -79,10 +84,9 @@ class MainActivity : ComponentActivity() {
                     ) {
                         GoogleSignInButton(
                             onSignIn = {
-                                username = it
-                            }
+                            },
+                            client = supabaseClient
                         )
-                        Text(text = username)
                     }
 
 
@@ -100,28 +104,17 @@ fun GoogleSignInButton(
     onSignIn: (String) -> Unit,
     profileViewModel: ProfileViewModel = hiltViewModel(),
     con: ConversationViewModel = hiltViewModel(),
-    message: MessageViewModel = hiltViewModel()
+    message: MessageViewModel = hiltViewModel(),
+    auth: SignInViewModel = hiltViewModel(),
+    client: SupabaseClient
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    val email by auth.email.collectAsState()
 
     val onClick: () -> Unit = {
-        Log.e(TAG, "Clicked")
-        profileViewModel.loadProfile("1776e865-ee99-4302-92ad-564acc64c9ca")
-        profileViewModel.updateDisplayName("1776e865-ee99-4302-92ad-564acc64c9ca", "Test2")
+
         val credentialManager = CredentialManager.create(context)
-        val mes = Message(
-            id = "1776e865-ee99-4302-92ad-564acc64c9cb",
-            conversationId = "8ffe5cfd-e5da-4710-9a00-24940dfd9276",
-            senderId = "1776e865-ee99-4302-92ad-564acc64c9ca",
-            body = "hi",
-            createdAt = "4/9/2025",
-            read = false
-        )
-
-        message.sendMessage(mes)
-
-
 
         // Generate a nonce and hash it with sha-256
         // Providing a nonce is optional but recommended
@@ -155,22 +148,7 @@ fun GoogleSignInButton(
 
                 val googleIdToken = googleIdTokenCredential.idToken
 
-             //   Log.e(TAG, googleIdToken)
-
-                /*
-                supabase.auth.signInWith(IDToken) {
-                    idToken = googleIdToken
-                    provider = Google
-                    nonce = rawNonce
-                }
-
-                // Handle successful sign-in
-                val user = supabase.auth.currentUserOrNull()
-                val userEmail = user?.email ?: "No email"
-                onSignIn(userEmail)
-                Log.e(TAG, userEmail)
-
-                 */
+                auth.onGoogleSignIn(googleIdToken, rawNonce)
 
             } catch (e: GetCredentialException) {
                 Log.e(TAG, e.toString())
@@ -193,6 +171,8 @@ fun GoogleSignInButton(
     ) {
         Text("Sign in with Google")
     }
+
+    Text(text = email)
 }
 
 @Composable
