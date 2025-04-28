@@ -15,19 +15,6 @@
         android:theme="@style/Theme.ChatApplication"
         tools:targetApi="31">
 
-        <activity
-            android:name=".DeepLinkHandlerActivity"
-            android:exported="true"
-            android:theme="@style/Theme.ChatApplication" >
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:host="callback.com"
-                    android:scheme="supabase.user-login" />
-            </intent-filter>
-        </activity>
 
         <activity
             android:name=".MainActivity"
