@@ -49,6 +49,10 @@ android {
 
 dependencies {
 
+
+    implementation(libs.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
+
     val hilt_version = "2.51.1"
 
     implementation ("com.google.dagger:hilt-android:$hilt_version")

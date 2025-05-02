@@ -27,6 +27,9 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.chatapplication.data.dto.MessageDto
 import com.example.chatapplication.di.SupabaseModule
 import com.example.chatapplication.domain.model.Message
@@ -44,6 +47,7 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.exceptions.RestException
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import java.security.MessageDigest
 import java.util.UUID
 import javax.inject.Inject
@@ -72,41 +76,26 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-
             ChatApplicationTheme {
-
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-
-                    Column(
-                        modifier = Modifier.padding(innerPadding),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        GoogleSignInButton(
-                            onSignIn = {
-                            },
-                            client = supabaseClient
-                        )
-                    }
-
-
+                val navController = rememberNavController()
+                NavHost(
+                    navController = navController,
+                    startDestination = ScreenA
+                ) {
+                    composable<ScreenA> {  }
                 }
             }
         }
     }
 }
 
-
+@Serializable
+object ScreenA
 
 @Composable
 fun GoogleSignInButton(
     modifier: Modifier = Modifier,
-    onSignIn: (String) -> Unit,
-    profileViewModel: ProfileViewModel = hiltViewModel(),
-    con: ConversationViewModel = hiltViewModel(),
-    message: MessageViewModel = hiltViewModel(),
     auth: SignInViewModel = hiltViewModel(),
-    client: SupabaseClient
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
