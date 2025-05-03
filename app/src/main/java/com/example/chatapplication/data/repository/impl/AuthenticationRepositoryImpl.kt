@@ -3,6 +3,7 @@ package com.example.chatapplication.data.repository.impl
 import android.util.Log
 import androidx.browser.trusted.Token
 import com.example.chatapplication.data.repository.AuthenticationRepository
+import com.example.chatapplication.domain.model.NetworkResult
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.providers.Google
 import io.github.jan.supabase.auth.providers.builtin.Email
@@ -45,7 +46,7 @@ class AuthenticationRepositoryImpl @Inject constructor(
             false
         }
     }
-    override suspend fun signInWithGoogle(token: String, rawNonce: String): Boolean {
+    override suspend fun signInWithGoogle(token: String, rawNonce: String): NetworkResult<Boolean> {
         return try {
             Log.e("AUTH", "Logging in")
             auth.signInWith(IDToken) {
@@ -54,10 +55,10 @@ class AuthenticationRepositoryImpl @Inject constructor(
                 nonce = rawNonce
             }
             Log.e("AUTHREPO", "Signing in.." + auth.currentUserOrNull().toString())
-            true
+            NetworkResult.Success(true)
         } catch (e: Exception) {
             Log.e("AUTH", e.toString())
-            false
+            NetworkResult.Error(e.toString(), false)
         }
     }
 }

@@ -1,13 +1,17 @@
 package com.example.chatapplication.viewmodel
 
 import android.R
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatapplication.UiStates.SignInUiState
 import com.example.chatapplication.data.repository.AuthenticationRepository
+import com.example.chatapplication.domain.model.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,48 +22,53 @@ class SignInViewModel @Inject constructor(
     private val authenticationRepository: AuthenticationRepository
 ) : ViewModel() {
 
-    private val _email = MutableStateFlow("")
-    val email: StateFlow<String> = _email
+    private val _uiState = MutableStateFlow(SignInUiState())
+    val uiState: StateFlow<SignInUiState> = _uiState
 
-    private val _password = MutableStateFlow("")
-    val password = _password
+    private val _response = MutableStateFlow<NetworkResult<Boolean>?>(null)
+    val response: StateFlow<NetworkResult<Boolean>?> = _response
 
-    init {
-        _email.value = authenticationRepository.getCurrentUser()
-    }
     fun onEmailChange(email: String) {
-        _email.value = email
+        _uiState.update {
+            it.copy(email = email)
+        }
     }
 
     fun onPasswordChange(password: String) {
-        _password.value = password
+        _uiState.update {
+            it.copy(password = password)
+        }
     }
 
-    fun getEmailValue(): String {
-        return _email.value
+    fun onSignUp() {
+        viewModelScope.launch {
+            authenticationRepository.signUp(
+                email = _uiState.value.email,
+                password = _uiState.value.password
+            )
+        }
     }
 
     fun onSignIn() {
         viewModelScope.launch {
             authenticationRepository.signIn(
-                email = _email.value,
-                password = _password.value
+                email = _uiState.value.email,
+                password = _uiState.value.password
             )
         }
     }
 
     fun onGoogleSignIn(token: String, rawNonce: String) {
+        _response.value = NetworkResult.Loading()
         viewModelScope.launch {
-            authenticationRepository.signInWithGoogle(token, rawNonce)
-            getCurrentUser()
+            val response = authenticationRepository.signInWithGoogle(token, rawNonce)
+            _response.value = response
+            Log.e("GOOGLESIGNIN", _response.value.toString())
         }
     }
 
-    private fun getCurrentUser() {
-        viewModelScope.launch {
-            val currentUserEmail = authenticationRepository.getCurrentUser()
-            _email.value = currentUserEmail
-        }
+    fun resetResponse() {
+        _response.value = null
     }
 
 }
