@@ -67,13 +67,10 @@ class MainActivity : ComponentActivity() {
                         val signInUiState = signInViewModel.uiState.collectAsState().value
                         val signInResponse = signInViewModel.response.collectAsState().value
 
-
-                        LaunchedEffect(signInResponse) {
-                            // When _response is Successful, user has successfully logged in so navigate to next screen.
-                            if (signInResponse is NetworkResult.Success && signInResponse.data == true) {
-                                navController.navigate(ScreenB) {
-                                    signInViewModel.resetResponse()
-                                }
+                         // When _response is now Successful, user has successfully logged in so navigate to next screen.
+                        if (signInResponse is NetworkResult.Success && signInResponse.data == true) {
+                            navController.navigate(ScreenB) {
+                                signInViewModel.resetResponse()
                             }
                         }
                         SignIn(
