@@ -3,6 +3,7 @@ package com.example.chatapplication.NavigationScreens
 import android.R
 import android.graphics.drawable.Icon
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatapplication.Components.GoogleSignInButton
+import com.example.chatapplication.domain.model.NetworkResult
 import java.nio.file.WatchEvent
 
 
@@ -37,12 +39,14 @@ fun SignIn(
     onPasswordChange: (String) -> Unit,
     onSignInButtonPressed: (String, String) -> Unit,
     onSignUpButtonPressed: () -> Unit,
-    onGoogleSignIn: (String, String) -> Unit
+    onGoogleSignIn: (String, String) -> Unit,
+    isError: NetworkResult<Boolean>?
 ) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
-            .padding(40.dp)
+            .padding(40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(text = "Chat", fontSize = 25.sp, color = Color.Blue,
             modifier = Modifier
@@ -50,6 +54,13 @@ fun SignIn(
                 .padding(0.dp, 50.dp, 0.dp, 0.dp),
             textAlign = TextAlign.Center
         )
+        if (isError is NetworkResult.Error) {
+            Text(
+                text = isError.message.toString(),
+                color = Color.Red,
+                modifier = Modifier.padding(20.dp)
+            )
+        }
         OutlinedTextField(
             value = email,
             onValueChange = { onEmailChange(it) },
@@ -115,6 +126,7 @@ fun SignInPreview() {
         onPasswordChange = {},
         onSignInButtonPressed = {a, b ->},
         onSignUpButtonPressed = {},
-        onGoogleSignIn = {a, b ->}
+        onGoogleSignIn = {a, b ->},
+        isError = NetworkResult.Success(true)
     )
 }

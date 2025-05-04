@@ -42,19 +42,21 @@ class SignInViewModel @Inject constructor(
 
     fun onSignUp() {
         viewModelScope.launch {
-            authenticationRepository.signUp(
+            val response = authenticationRepository.signUp(
                 email = _uiState.value.email,
                 password = _uiState.value.password
             )
+            _response.value = response
         }
     }
 
     fun onSignIn() {
         viewModelScope.launch {
-            authenticationRepository.signIn(
+            val response = authenticationRepository.signIn(
                 email = _uiState.value.email,
                 password = _uiState.value.password
             )
+            _response.value = response
         }
     }
 

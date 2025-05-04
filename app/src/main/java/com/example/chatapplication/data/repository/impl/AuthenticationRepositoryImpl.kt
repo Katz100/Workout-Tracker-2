@@ -14,36 +14,27 @@ class AuthenticationRepositoryImpl @Inject constructor(
     private val auth: Auth
 ) : AuthenticationRepository {
 
-    override fun getCurrentUser(): String {
-        return try {
-            Log.e("AUTHREPO", "Current user" + auth.currentUserOrNull().toString())
-            auth.currentUserOrNull()?.email.toString()
-        } catch (e: Exception) {
-            Log.e("AUTH", e.toString())
-            "error"
-        }
-    }
 
-    override suspend fun signIn(email: String, password: String): Boolean {
+    override suspend fun signIn(email: String, password: String): NetworkResult<Boolean> {
         return try {
             auth.signInWith(Email) {
                 this.email = email
                 this.password = password
             }
-            true
+            NetworkResult.Success(true)
         } catch (e: Exception) {
-            false
+            NetworkResult.Error(e.message, false)
         }
     }
-    override suspend fun signUp(email: String, password: String): Boolean {
+    override suspend fun signUp(email: String, password: String): NetworkResult<Boolean> {
         return try {
             auth.signUpWith(Email) {
                 this.email = email
                 this.password = password
             }
-            true
+            NetworkResult.Success(true)
         } catch (e: Exception) {
-            false
+            NetworkResult.Error(e.message, false)
         }
     }
     override suspend fun signInWithGoogle(token: String, rawNonce: String): NetworkResult<Boolean> {

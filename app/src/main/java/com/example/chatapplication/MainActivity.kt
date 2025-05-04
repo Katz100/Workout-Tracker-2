@@ -79,10 +79,14 @@ class MainActivity : ComponentActivity() {
                             onEmailChange = { signInViewModel.onEmailChange(it) },
                             onPasswordChange = { signInViewModel.onPasswordChange(it) },
                             onSignUpButtonPressed = {},
-                            onSignInButtonPressed = {a, b ->},
+                            onSignInButtonPressed = {email, password ->
+                                //remove captured parameters
+                                signInViewModel.onSignIn()
+                            },
                             onGoogleSignIn = { googleIdToken, rawNonce ->
                                 signInViewModel.onGoogleSignIn(googleIdToken, rawNonce)
-                            }
+                            },
+                            isError = signInResponse
                         )
                     }
 
