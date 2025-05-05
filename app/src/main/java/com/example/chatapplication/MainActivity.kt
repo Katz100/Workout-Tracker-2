@@ -6,6 +6,9 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -13,15 +16,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.chatapplication.NavigationScreens.HomePage
 import com.example.chatapplication.NavigationScreens.SignIn
 import com.example.chatapplication.ScreenB
 import com.example.chatapplication.domain.model.NetworkResult
 import com.example.chatapplication.ui.theme.ChatApplicationTheme
 import com.example.chatapplication.viewmodel.SignInViewModel
+import com.example.chatapplication.viewmodel.UserAuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
@@ -58,11 +65,41 @@ class MainActivity : ComponentActivity() {
         setContent {
             ChatApplicationTheme {
                 val navController = rememberNavController()
+                val userAuthViewModel: UserAuthViewModel = hiltViewModel()
                 NavHost(
                     navController = navController,
-                    startDestination = ScreenA
+                    startDestination = SplashScreen
                 ) {
-                    composable<ScreenA> {
+
+                    // Check to see if the user's session is active
+                    composable<SplashScreen> {
+                        val session = userAuthViewModel.uiState.collectAsState().value.session
+                        LaunchedEffect(session) {
+                            Log.e("AUTHSESSION2", "session value: ${session.toString()}")
+                            when(session) {
+                                is SessionStatus.NotAuthenticated -> {
+                                    navController.navigate(SignInScreen) {
+                                        popUpTo(SplashScreen) { inclusive = true }
+                                    }
+                                }
+                                is SessionStatus.Authenticated -> {
+                                    navController.navigate(ScreenB) {
+                                        popUpTo(SplashScreen) { inclusive = true }
+                                    }
+                                }
+
+                                SessionStatus.Initializing -> TODO()
+                                is SessionStatus.RefreshFailure -> TODO()
+                            }
+                        }
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                    composable<SignInScreen> {
                         val signInViewModel: SignInViewModel = hiltViewModel()
                         val signInUiState = signInViewModel.uiState.collectAsState().value
                         val signInResponse = signInViewModel.response.collectAsState().value
@@ -97,6 +134,14 @@ class MainActivity : ComponentActivity() {
                         }
 
                         Text(text = email)
+                        HomePage(
+                            onLogOut = {
+                                userAuthViewModel.logOut()
+                                navController.navigate(SignInScreen) {
+                                    popUpTo(ScreenB) { inclusive = true }
+                                }
+                            }
+                        )
                     }
                 }
             }
@@ -105,7 +150,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Serializable
-object ScreenA
+object SplashScreen
+
+@Serializable
+object SignInScreen
 
 @Serializable
 object ScreenB

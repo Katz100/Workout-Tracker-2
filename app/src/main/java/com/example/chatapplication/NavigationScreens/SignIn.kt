@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.OutlinedButton
@@ -113,6 +114,10 @@ fun SignIn(
             textAlign = TextAlign.Right,
             color = Color.Blue
         )
+
+        if (isError is NetworkResult.Loading) {
+            CircularProgressIndicator()
+        }
     }
 }
 
