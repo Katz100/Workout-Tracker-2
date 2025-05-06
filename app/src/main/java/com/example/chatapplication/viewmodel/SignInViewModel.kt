@@ -65,7 +65,6 @@ class SignInViewModel @Inject constructor(
         viewModelScope.launch {
             val response = authenticationRepository.signInWithGoogle(token, rawNonce)
             _response.value = response
-            Log.e("GOOGLESIGNIN", _response.value.toString())
         }
     }
 

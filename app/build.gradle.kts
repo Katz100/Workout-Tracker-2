@@ -52,6 +52,7 @@ dependencies {
 
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    testImplementation(libs.junit.junit)
 
     val hilt_version = "2.51.1"
 
