@@ -35,6 +35,7 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.status.SessionSource
 import io.github.jan.supabase.auth.status.SessionStatus
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.observeOn
 import kotlinx.serialization.Serializable
 import javax.inject.Inject
@@ -66,6 +67,7 @@ class MainActivity : ComponentActivity() {
                         val session = userAuthViewModel.uiState.collectAsState().value.session
                         LaunchedEffect(session) {
                             Log.e("AUTHSESSION2", "session value: ${session.toString()}")
+                            delay(1000)
                             when(session) {
                                 is SessionStatus.NotAuthenticated -> {
                                     navController.navigate(SignInScreen) {
@@ -98,37 +100,35 @@ class MainActivity : ComponentActivity() {
                         val signInUiState = signInViewModel.uiState.collectAsState().value
                         val signInResponse = signInViewModel.response.collectAsState().value
 
+                        var hasNavigated by remember { mutableStateOf(false) }
+
                          // When _response is now Successful, user has successfully logged in so navigate to next screen.
-                        if (signInResponse is NetworkResult.Success && signInResponse.data == true) {
-                            navController.navigate(ScreenB) {
-                                signInViewModel.resetResponse()
+                        if (signInResponse is NetworkResult.Success && signInResponse.data == true && !hasNavigated) {
+                            LaunchedEffect(Unit) {
+                                hasNavigated = true
+                                navController.navigate(ScreenB) {
+                                    popUpTo(SignInScreen) { inclusive = true }
+                                }
                             }
+
                         }
 
-                        if (signInResponse is NetworkResult.Loading) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator()
-                            }
-                        } else {
-                            SignIn(
-                                email = signInUiState.email,
-                                password = signInUiState.password,
-                                onEmailChange = { signInViewModel.onEmailChange(it) },
-                                onPasswordChange = { signInViewModel.onPasswordChange(it) },
-                                onSignUpButtonPressed = {},
-                                onSignInButtonPressed = { email, password ->
-                                    //remove captured parameters
-                                    signInViewModel.onSignIn()
-                                },
-                                onGoogleSignIn = { googleIdToken, rawNonce ->
-                                    signInViewModel.onGoogleSignIn(googleIdToken, rawNonce)
-                                },
-                                isError = signInResponse
-                            )
-                        }
+                        SignIn(
+                            email = signInUiState.email,
+                            password = signInUiState.password,
+                            onEmailChange = { signInViewModel.onEmailChange(it) },
+                            onPasswordChange = { signInViewModel.onPasswordChange(it) },
+                            onSignUpButtonPressed = {},
+                            onSignInButtonPressed = { email, password ->
+                                //remove captured parameters
+                                signInViewModel.onSignIn()
+                            },
+                            onGoogleSignIn = { googleIdToken, rawNonce ->
+                                signInViewModel.onGoogleSignIn(googleIdToken, rawNonce)
+                            },
+                            isError = signInResponse
+                        )
+
                     }
 
                     composable<ScreenB> {

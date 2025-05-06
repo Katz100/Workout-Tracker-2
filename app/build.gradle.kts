@@ -11,6 +11,8 @@ plugins {
 
 }
 
+
+
 android {
     namespace = "com.example.chatapplication"
     compileSdk = 35

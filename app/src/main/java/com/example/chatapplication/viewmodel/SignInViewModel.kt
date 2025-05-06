@@ -8,6 +8,7 @@ import com.example.chatapplication.UiStates.SignInUiState
 import com.example.chatapplication.data.repository.AuthenticationRepository
 import com.example.chatapplication.domain.model.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,6 +43,7 @@ class SignInViewModel @Inject constructor(
 
     fun onSignUp() {
         viewModelScope.launch {
+            delay(1000)
             val response = authenticationRepository.signUp(
                 email = _uiState.value.email,
                 password = _uiState.value.password
@@ -52,6 +54,7 @@ class SignInViewModel @Inject constructor(
 
     fun onSignIn() {
         viewModelScope.launch {
+            delay(1000)
             val response = authenticationRepository.signIn(
                 email = _uiState.value.email,
                 password = _uiState.value.password
@@ -63,6 +66,7 @@ class SignInViewModel @Inject constructor(
     fun onGoogleSignIn(token: String, rawNonce: String) {
         _response.value = NetworkResult.Loading()
         viewModelScope.launch {
+            delay(1000)
             val response = authenticationRepository.signInWithGoogle(token, rawNonce)
             _response.value = response
         }
