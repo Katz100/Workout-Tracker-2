@@ -49,7 +49,16 @@ class AuthenticationRepositoryImpl @Inject constructor(
             NetworkResult.Success(true)
         } catch (e: Exception) {
             Log.e("AUTH", e.toString())
-            NetworkResult.Error(e.toString(), false)
+            NetworkResult.Error(e.message, false)
+        }
+    }
+
+    override suspend fun signOut(): NetworkResult<Boolean> {
+        return try {
+            auth.signOut()
+            NetworkResult.Success(true)
+        } catch (e: Exception) {
+            NetworkResult.Error(e.message)
         }
     }
 }

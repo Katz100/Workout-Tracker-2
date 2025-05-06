@@ -41,16 +41,6 @@ import javax.inject.Inject
 
 const val TAG = "MainApp"
 
-/*
-val supabase = createSupabaseClient(
-    supabaseUrl = "https://jcqxxztakmhnpmcapfgr.supabase.co",
-    supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpjcXh4enRha21obnBtY2FwZmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM1Mzc5MjAsImV4cCI6MjA1OTExMzkyMH0.mW3CiZwPQi2ZbXJLmcn8l1VbdOXcqjy1G5r_NaDtTaE"
-) {
-   install(Auth)
-    install(Postgrest)
-}
-*/
-//client id: 305595485789-e14aebqncklp862np65f9srgv5390pg4.apps.googleusercontent.com
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -89,7 +79,11 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 SessionStatus.Initializing -> TODO()
-                                is SessionStatus.RefreshFailure -> TODO()
+                                is SessionStatus.RefreshFailure -> {
+                                    navController.navigate(SignInScreen) {
+                                        popUpTo(SplashScreen) { inclusive = true }
+                                    }
+                                }
                             }
                         }
                         Box(
@@ -110,30 +104,34 @@ class MainActivity : ComponentActivity() {
                                 signInViewModel.resetResponse()
                             }
                         }
-                        SignIn(
-                            email = signInUiState.email,
-                            password = signInUiState.password,
-                            onEmailChange = { signInViewModel.onEmailChange(it) },
-                            onPasswordChange = { signInViewModel.onPasswordChange(it) },
-                            onSignUpButtonPressed = {},
-                            onSignInButtonPressed = {email, password ->
-                                //remove captured parameters
-                                signInViewModel.onSignIn()
-                            },
-                            onGoogleSignIn = { googleIdToken, rawNonce ->
-                                signInViewModel.onGoogleSignIn(googleIdToken, rawNonce)
-                            },
-                            isError = signInResponse
-                        )
+
+                        if (signInResponse is NetworkResult.Loading) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        } else {
+                            SignIn(
+                                email = signInUiState.email,
+                                password = signInUiState.password,
+                                onEmailChange = { signInViewModel.onEmailChange(it) },
+                                onPasswordChange = { signInViewModel.onPasswordChange(it) },
+                                onSignUpButtonPressed = {},
+                                onSignInButtonPressed = { email, password ->
+                                    //remove captured parameters
+                                    signInViewModel.onSignIn()
+                                },
+                                onGoogleSignIn = { googleIdToken, rawNonce ->
+                                    signInViewModel.onGoogleSignIn(googleIdToken, rawNonce)
+                                },
+                                isError = signInResponse
+                            )
+                        }
                     }
 
                     composable<ScreenB> {
-                        var email by remember { mutableStateOf("") }
-                        LaunchedEffect(Dispatchers.IO) {
-                            email =  supabaseClient.auth.retrieveUserForCurrentSession(updateSession = true).email.toString()
-                        }
-
-                        Text(text = email)
                         HomePage(
                             onLogOut = {
                                 userAuthViewModel.logOut()
