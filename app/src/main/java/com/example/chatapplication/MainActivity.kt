@@ -24,10 +24,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.chatapplication.NavigationScreens.HomePage
 import com.example.chatapplication.NavigationScreens.SignIn
+import com.example.chatapplication.NavigationScreens.SignUp
 import com.example.chatapplication.ScreenB
 import com.example.chatapplication.domain.model.NetworkResult
 import com.example.chatapplication.ui.theme.ChatApplicationTheme
 import com.example.chatapplication.viewmodel.SignInViewModel
+import com.example.chatapplication.viewmodel.SignUpViewModel
 import com.example.chatapplication.viewmodel.UserAuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jan.supabase.SupabaseClient
@@ -134,7 +136,21 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable<SignUpScreen> {
-                        Text("hello")
+                        val signUpViewModel: SignUpViewModel = hiltViewModel()
+                        val signUpUiState = signUpViewModel.uiState.collectAsState().value
+                        val signUpResponse = signUpViewModel.response.collectAsState().value
+                        SignUp(
+                            displayName = signUpUiState.displayName,
+                            email = signUpUiState.email,
+                            password = signUpUiState.password,
+                            confirmPassword = signUpUiState.confirmPassword,
+                            onEmailChange = { signUpViewModel.onEmailChange(it) },
+                            onPasswordChange = { signUpViewModel.onPasswordChange(it) },
+                            onConfirmPasswordChange = { signUpViewModel.onConfirmPasswordChange(it) },
+                            onDisplayNameChange = { signUpViewModel.onDisplayNameChange(it) },
+                            onSignUpButtonPressed = { signUpViewModel.onSignUp() },
+                            isError = signUpResponse
+                        )
                     }
 
                     composable<ScreenB> {

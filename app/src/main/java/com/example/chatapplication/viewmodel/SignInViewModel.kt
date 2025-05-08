@@ -41,20 +41,22 @@ class SignInViewModel @Inject constructor(
         }
     }
 
+    //move to signUpViewModel
     fun onSignUp() {
         viewModelScope.launch {
             delay(1000)
             val response = authenticationRepository.signUp(
                 email = _uiState.value.email,
-                password = _uiState.value.password
+                password = _uiState.value.password,
+                displayName = ""
             )
             _response.value = response
         }
     }
 
     fun onSignIn() {
+        _response.value = NetworkResult.Loading()
         viewModelScope.launch {
-            delay(1000)
             val response = authenticationRepository.signIn(
                 email = _uiState.value.email,
                 password = _uiState.value.password
@@ -66,7 +68,6 @@ class SignInViewModel @Inject constructor(
     fun onGoogleSignIn(token: String, rawNonce: String) {
         _response.value = NetworkResult.Loading()
         viewModelScope.launch {
-            delay(1000)
             val response = authenticationRepository.signInWithGoogle(token, rawNonce)
             _response.value = response
         }

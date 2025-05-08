@@ -48,15 +48,20 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    //move to signUpViewModel
-    fun onSignUp() {
-        viewModelScope.launch {
-           val response = authenticationRepository.signUp(
-                email = _uiState.value.email,
-                password = _uiState.value.password
-            )
 
-            _response.value = response
+    fun onSignUp() {
+        if (!passwordsMatch()) {
+            _response.value = NetworkResult.Error("Passwords do not match")
+        } else {
+            viewModelScope.launch {
+                val response = authenticationRepository.signUp(
+                    email = _uiState.value.email,
+                    password = _uiState.value.password,
+                    displayName = _uiState.value.displayName
+                )
+
+                _response.value = response
+            }
         }
     }
 

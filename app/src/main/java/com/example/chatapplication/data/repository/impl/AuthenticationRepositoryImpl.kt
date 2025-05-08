@@ -4,10 +4,14 @@ import android.util.Log
 import androidx.browser.trusted.Token
 import com.example.chatapplication.data.repository.AuthenticationRepository
 import com.example.chatapplication.domain.model.NetworkResult
+import io.github.jan.supabase.annotations.SupabaseInternal
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.providers.Google
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.providers.builtin.IDToken
+import io.github.jan.supabase.toJsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonObject
 import javax.inject.Inject
 
 class AuthenticationRepositoryImpl @Inject constructor(
@@ -26,11 +30,15 @@ class AuthenticationRepositoryImpl @Inject constructor(
             NetworkResult.Error(e.message, false)
         }
     }
-    override suspend fun signUp(email: String, password: String): NetworkResult<Boolean> {
+    @OptIn(SupabaseInternal::class)
+    override suspend fun signUp(email: String, password: String, displayName: String): NetworkResult<Boolean> {
         return try {
             auth.signUpWith(Email) {
                 this.email = email
                 this.password = password
+                data = buildJsonObject {
+                    put("display_name", JsonPrimitive(displayName))
+                }
             }
             NetworkResult.Success(true)
         } catch (e: Exception) {
