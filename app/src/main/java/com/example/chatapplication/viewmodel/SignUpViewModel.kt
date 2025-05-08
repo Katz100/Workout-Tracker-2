@@ -51,7 +51,7 @@ class SignUpViewModel @Inject constructor(
 
     fun onSignUp() {
         if (!passwordsMatch()) {
-            _response.value = NetworkResult.Error("Passwords do not match")
+            _response.value = NetworkResult.Error("Passwords do not match", false)
         } else {
             viewModelScope.launch {
                 val response = authenticationRepository.signUp(

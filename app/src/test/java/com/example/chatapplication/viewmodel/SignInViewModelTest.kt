@@ -59,7 +59,7 @@ class SignInViewModelTest {
     fun onSignUp() = runTest {
         val expected = NetworkResult.Success(true)
 
-        coEvery { authenticationRepository.signUp(any(), any()) } returns expected
+        coEvery { authenticationRepository.signUp(any(), any(), any()) } returns expected
 
         signInViewModel.onEmailChange("someemail")
         signInViewModel.onPasswordChange("somepassword")
@@ -74,7 +74,7 @@ class SignInViewModelTest {
     fun onSignUpFailedCase() = runTest {
         val expected = NetworkResult.Error("network error", false)
 
-        coEvery { authenticationRepository.signUp(any(), any()) } returns expected
+        coEvery { authenticationRepository.signUp(any(), any(), any()) } returns expected
 
         signInViewModel.onEmailChange("someemail")
         signInViewModel.onPasswordChange("somepassword")

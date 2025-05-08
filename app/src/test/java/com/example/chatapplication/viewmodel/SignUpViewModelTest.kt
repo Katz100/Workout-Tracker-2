@@ -72,13 +72,33 @@ class SignUpViewModelTest {
     fun onSignUp() = runTest {
         val expected = NetworkResult.Success(true)
 
-        coEvery { authenticationRepository.signUp(any(), any()) } returns expected
+        coEvery { authenticationRepository.signUp(any(), any(), any()) } returns expected
+
+        signUpViewModel.onDisplayNameChange("name")
         signUpViewModel.onEmailChange("email")
         signUpViewModel.onPasswordChange("password")
+        signUpViewModel.onConfirmPasswordChange("password")
         signUpViewModel.onSignUp()
         advanceUntilIdle()
 
         assertEquals(expected, signUpViewModel.response.value)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun onSignUpNonMatchingPasswords() = runTest {
+        val networkResult = NetworkResult.Success(true)
+        val expected = NetworkResult.Error("Passwords do not match", false)
+        coEvery { authenticationRepository.signUp(any(), any(), any()) } returns networkResult
+
+        signUpViewModel.onDisplayNameChange("name")
+        signUpViewModel.onEmailChange("email")
+        signUpViewModel.onPasswordChange("password")
+        signUpViewModel.onConfirmPasswordChange("wrongPassword")
+        signUpViewModel.onSignUp()
+        advanceUntilIdle()
+
+        assertEquals(expected.message, signUpViewModel.response.value?.message)
     }
 
     @Test
