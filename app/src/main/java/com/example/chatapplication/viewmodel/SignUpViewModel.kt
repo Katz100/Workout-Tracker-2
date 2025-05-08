@@ -2,12 +2,13 @@ package com.example.chatapplication.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatapplication.UiStates.SignInUiState
+import com.example.chatapplication.UiStates.SignUpUiState
 import com.example.chatapplication.data.repository.AuthenticationRepository
+import com.example.chatapplication.domain.model.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,26 +18,49 @@ class SignUpViewModel @Inject constructor(
     private val authenticationRepository: AuthenticationRepository
 ) : ViewModel() {
 
-    private val _email = MutableStateFlow("")
-    val email: Flow<String> = _email
+    private val _uiState = MutableStateFlow(SignUpUiState())
+    val uiState: StateFlow<SignUpUiState> = _uiState
 
-    private val _password = MutableStateFlow("")
-    val password = _password
+    private val _response = MutableStateFlow<NetworkResult<Boolean>?>(null)
+    val response: StateFlow<NetworkResult<Boolean>?> = _response
 
     fun onEmailChange(email: String) {
-        _email.value = email
+        _uiState.update {
+            it.copy(email = email)
+        }
     }
 
     fun onPasswordChange(password: String) {
-        _password.value = password
+        _uiState.update {
+            it.copy(password = password)
+        }
     }
 
+    fun onConfirmPasswordChange(confirmPassword: String) {
+        _uiState.update {
+            it.copy(confirmPassword = confirmPassword)
+        }
+    }
+
+    fun onDisplayNameChange(displayName: String) {
+        _uiState.update {
+            it.copy(displayName = displayName)
+        }
+    }
+
+    //move to signUpViewModel
     fun onSignUp() {
         viewModelScope.launch {
-            authenticationRepository.signUp(
-                email = _email.value,
-                password = _password.value
+           val response = authenticationRepository.signUp(
+                email = _uiState.value.email,
+                password = _uiState.value.password
             )
+
+            _response.value = response
         }
+    }
+
+    fun passwordsMatch() : Boolean {
+        return _uiState.value.password == _uiState.value.confirmPassword
     }
 }

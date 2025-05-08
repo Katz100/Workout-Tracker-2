@@ -118,7 +118,9 @@ class MainActivity : ComponentActivity() {
                             password = signInUiState.password,
                             onEmailChange = { signInViewModel.onEmailChange(it) },
                             onPasswordChange = { signInViewModel.onPasswordChange(it) },
-                            onSignUpButtonPressed = {},
+                            onSignUpButtonPressed = {
+                                navController.navigate(SignUpScreen)
+                            },
                             onSignInButtonPressed = { email, password ->
                                 //remove captured parameters
                                 signInViewModel.onSignIn()
@@ -129,6 +131,10 @@ class MainActivity : ComponentActivity() {
                             isError = signInResponse
                         )
 
+                    }
+
+                    composable<SignUpScreen> {
+                        Text("hello")
                     }
 
                     composable<ScreenB> {
@@ -149,6 +155,9 @@ class MainActivity : ComponentActivity() {
 
 @Serializable
 object SplashScreen
+
+@Serializable
+object SignUpScreen
 
 @Serializable
 object SignInScreen
