@@ -51,6 +51,7 @@ android {
 
 dependencies {
 
+    implementation("androidx.compose.ui:ui:1.9.0-alpha02")
 
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
