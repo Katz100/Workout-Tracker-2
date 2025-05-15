@@ -9,13 +9,14 @@ import com.example.chatapplication.domain.model.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
-import io.github.jan.supabase.auth.status.SessionStatus
+import io.github.jan.supabase.gotrue.SessionStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+
 
 @HiltViewModel
 class UserAuthViewModel @Inject constructor(
@@ -25,6 +26,9 @@ class UserAuthViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState
+
+    private val _response = MutableStateFlow<NetworkResult<Boolean>?>(null)
+    val response: StateFlow<NetworkResult<Boolean>?> = _response
 
     init {
         viewModelScope.launch {
@@ -41,7 +45,13 @@ class UserAuthViewModel @Inject constructor(
 
     fun logOut()  {
         viewModelScope.launch {
-            authenticationRepository.signOut()
+            val response = authenticationRepository.signOut()
+            if (response is NetworkResult.Error) {
+                //User tried to logout while offline.
+                supabaseClient.auth.clearSession()
+            } else {
+                _response.value = response
+            }
         }
     }
 }

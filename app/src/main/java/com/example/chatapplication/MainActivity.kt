@@ -68,22 +68,26 @@ class MainActivity : ComponentActivity() {
                     composable<SplashScreen> {
                         val session = userAuthViewModel.uiState.collectAsState().value.session
                         LaunchedEffect(session) {
-                            Log.e("AUTHSESSION2", "session value: ${session.toString()}")
-                            delay(1000)
+                            Log.e(TAG, "session value: ${session.toString()}")
                             when(session) {
                                 is SessionStatus.NotAuthenticated -> {
+                                    Log.e(TAG, "Session not authenticated: ${session.toString()}")
                                     navController.navigate(SignInScreen) {
                                         popUpTo(SplashScreen) { inclusive = true }
                                     }
                                 }
                                 is SessionStatus.Authenticated -> {
+                                    Log.e(TAG, "Session authenticated: ${session.toString()}")
                                     navController.navigate(ScreenB) {
                                         popUpTo(SplashScreen) { inclusive = true }
                                     }
                                 }
 
-                                SessionStatus.Initializing -> TODO()
+                                is SessionStatus.Initializing -> {
+                                    Log.e(TAG, "Session initializing")
+                                }
                                 is SessionStatus.RefreshFailure -> {
+                                    Log.e(TAG, "Session authenticated: ${session.toString()}")
                                     navController.navigate(SignInScreen) {
                                         popUpTo(SplashScreen) { inclusive = true }
                                     }
