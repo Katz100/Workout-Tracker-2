@@ -6,7 +6,9 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -34,6 +36,7 @@ import com.example.chatapplication.viewmodel.UserAuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.auth.handleDeeplinks
 import io.github.jan.supabase.auth.status.SessionSource
 import io.github.jan.supabase.auth.status.SessionStatus
 import kotlinx.coroutines.Dispatchers
@@ -53,6 +56,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // handle deeplink from confirmation email
+        supabaseClient.handleDeeplinks(intent) { session ->
+            Log.e(TAG, "deep link: ${session.toString()}")
+        }
 
         enableEdgeToEdge()
         setContent {
@@ -143,18 +150,41 @@ class MainActivity : ComponentActivity() {
                         val signUpViewModel: SignUpViewModel = hiltViewModel()
                         val signUpUiState = signUpViewModel.uiState.collectAsState().value
                         val signUpResponse = signUpViewModel.response.collectAsState().value
-                        SignUp(
-                            displayName = signUpUiState.displayName,
-                            email = signUpUiState.email,
-                            password = signUpUiState.password,
-                            confirmPassword = signUpUiState.confirmPassword,
-                            onEmailChange = { signUpViewModel.onEmailChange(it) },
-                            onPasswordChange = { signUpViewModel.onPasswordChange(it) },
-                            onConfirmPasswordChange = { signUpViewModel.onConfirmPasswordChange(it) },
-                            onDisplayNameChange = { signUpViewModel.onDisplayNameChange(it) },
-                            onSignUpButtonPressed = { signUpViewModel.onSignUp() },
-                            isError = signUpResponse
-                        )
+
+                        var waitForConfirmation by remember { mutableStateOf(false) }
+
+                        if (signUpResponse is NetworkResult.Success) {
+                            waitForConfirmation = true
+                        }
+                        //TODO: navigate to separate screen so user can't go back to sign in page.
+                        if (waitForConfirmation) {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text("Please confirm your email.")
+                                CircularProgressIndicator()
+                            }
+
+                        } else {
+                            SignUp(
+                                displayName = signUpUiState.displayName,
+                                email = signUpUiState.email,
+                                password = signUpUiState.password,
+                                confirmPassword = signUpUiState.confirmPassword,
+                                onEmailChange = { signUpViewModel.onEmailChange(it) },
+                                onPasswordChange = { signUpViewModel.onPasswordChange(it) },
+                                onConfirmPasswordChange = {
+                                    signUpViewModel.onConfirmPasswordChange(
+                                        it
+                                    )
+                                },
+                                onDisplayNameChange = { signUpViewModel.onDisplayNameChange(it) },
+                                onSignUpButtonPressed = { signUpViewModel.onSignUp() },
+                                isError = signUpResponse
+                            )
+                        }
                     }
 
                     composable<ScreenB> {

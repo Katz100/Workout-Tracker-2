@@ -26,8 +26,8 @@ object SupabaseModule {
         ) {
             install(Postgrest)
             install(Auth) {
-                host = "callback"
-                scheme = "supabase.user-login"
+                scheme = "com.supabase"
+                host   = "login-callback"
             }
 
         }
