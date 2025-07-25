@@ -46,6 +46,7 @@ import kotlinx.serialization.Serializable
 import javax.inject.Inject
 
 const val TAG = "MainApp"
+// kj
 
 
 @AndroidEntryPoint
