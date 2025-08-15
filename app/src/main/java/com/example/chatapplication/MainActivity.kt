@@ -24,10 +24,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.chatapplication.Components.CustomDrawer
 import com.example.chatapplication.NavigationScreens.HomePage
 import com.example.chatapplication.NavigationScreens.SignIn
 import com.example.chatapplication.NavigationScreens.SignUp
-import com.example.chatapplication.ScreenB
 import com.example.chatapplication.domain.model.NetworkResult
 import com.example.chatapplication.ui.theme.ChatApplicationTheme
 import com.example.chatapplication.viewmodel.SignInViewModel
@@ -85,7 +85,7 @@ class MainActivity : ComponentActivity() {
                                 }
                                 is SessionStatus.Authenticated -> {
                                     Log.e(TAG, "Session authenticated: ${session.toString()}")
-                                    navController.navigate(ScreenB) {
+                                    navController.navigate(HomePageScreen) {
                                         popUpTo(SplashScreen) { inclusive = true }
                                     }
                                 }
@@ -94,7 +94,7 @@ class MainActivity : ComponentActivity() {
                                     Log.e(TAG, "Session initializing")
                                 }
                                 is SessionStatus.RefreshFailure -> {
-                                    Log.e(TAG, "Session authenticated: ${session.toString()}")
+                                    Log.e(TAG, "Session Refresh Failure: ${session.toString()}")
                                     navController.navigate(SignInScreen) {
                                         popUpTo(SplashScreen) { inclusive = true }
                                     }
@@ -119,7 +119,7 @@ class MainActivity : ComponentActivity() {
                         if (signInResponse is NetworkResult.Success && signInResponse.data == true && !hasNavigated) {
                             LaunchedEffect(Unit) {
                                 hasNavigated = true
-                                navController.navigate(ScreenB) {
+                                navController.navigate(HomePageScreen) {
                                     popUpTo(SignInScreen) { inclusive = true }
                                 }
                             }
@@ -187,12 +187,12 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    composable<ScreenB> {
+                    composable<HomePageScreen> {
                         HomePage(
                             onLogOut = {
                                 userAuthViewModel.logOut()
                                 navController.navigate(SignInScreen) {
-                                    popUpTo(ScreenB) { inclusive = true }
+                                    popUpTo(HomePageScreen) { inclusive = true }
                                 }
                             }
                         )
@@ -213,4 +213,4 @@ object SignUpScreen
 object SignInScreen
 
 @Serializable
-object ScreenB
+object HomePageScreen

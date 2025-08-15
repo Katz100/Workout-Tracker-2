@@ -51,6 +51,8 @@ android {
 
 dependencies {
 
+    implementation(platform("androidx.compose:compose-bom:2025.05.00"))
+
     implementation("androidx.compose.ui:ui:1.9.0-alpha02")
 
     implementation(libs.navigation.compose)
