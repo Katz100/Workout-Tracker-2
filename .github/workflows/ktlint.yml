@@ -16,4 +16,5 @@ jobs:
       - uses: le0nidas/ktlint-pr-comments@v1.1
         with:
           repotoken: ${{ secrets.GITHUB_TOKEN }}
-          arguments: "--disabled_rules=parameter-list-wrapping,final-newline"
+          disabledrules: parameter-list-wrapping,final-newline
+          args: "--relative"
