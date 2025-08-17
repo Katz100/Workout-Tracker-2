@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-05-15T01:37:09.293656Z">
+        <DropdownSelection timestamp="2025-06-02T18:11:57.199356Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=49261JEBF01726" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/cody.hopkins/.android/avd/Medium_Phone.avd" />
             </handle>
           </Target>
         </DropdownSelection>
@@ -21,11 +21,16 @@
           </targets>
         </DialogSelection>
       </SelectionState>
-      <SelectionState runConfigName="signInTestAllElements()">
+      <SelectionState runConfigName="CustomDrawerPreview">
         <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="signInTestErrorMessage()">
-        <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2025-06-02T22:33:37.870885Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/cody.hopkins/.android/avd/Medium_Phone.avd" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
       </SelectionState>
     </selectionStates>
   </component>
