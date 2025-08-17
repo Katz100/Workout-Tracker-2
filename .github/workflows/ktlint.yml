@@ -1,0 +1,20 @@
+name: Ktlint
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  ktlint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: le0nidas/ktlint-pr-comments@v1.1
+        with:
+          repotoken: ${{ secrets.GITHUB_TOKEN }}
+          disabledrules: parameter-list-wrapping,final-newline
+          args: "--relative"
