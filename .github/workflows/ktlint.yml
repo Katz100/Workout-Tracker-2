@@ -1,20 +1,17 @@
-name: Ktlint
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
+name: reviewdog
+on: [pull_request]
 jobs:
   ktlint:
+    name: Check Code Quality
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-      
-      - uses: le0nidas/ktlint-pr-comments@v1.1
+      - name: Clone repo
+        uses: actions/checkout@master
         with:
-          repotoken: ${{ secrets.GITHUB_TOKEN }}
-          disabledrules: parameter-list-wrapping,final-newline
-          args: "--relative"
+          fetch-depth: 1
+      - name: ktlint
+        uses: ScaCap/action-ktlint@master
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review # Change reporter
