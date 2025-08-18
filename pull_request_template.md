@@ -1,6 +1,6 @@
 ![gif]()
 ## Description
-[Issue](https://github.com/Katz100/Final-Project/issues/NUMBER)
+[Issue](https://github.com/Katz100/Chat-Application/issues/NUMBER)
 - a short description of your changes
 
 (Squash & Merge all PRs)
