@@ -24,10 +24,14 @@ class ExerciseRepositoryImpl @Inject constructor(
 
         val exerciseToInsert = exerciseDto.copy(userId = currentUserId)
 
-        val response = postgrest
-            .from(EXERCISE_TABLE)
-            .insert(exerciseToInsert)
+        return try {
+            val response = postgrest
+                .from(EXERCISE_TABLE)
+                .insert(exerciseToInsert)
+            NetworkResult.Success<PostgrestResult>(response)
+        } catch (e: Exception) {
+            NetworkResult.Error<PostgrestResult>("Error inserting exercise: ${e.message}")
+        }
 
-        return NetworkResult.Success<PostgrestResult>(response)
     }
 }
