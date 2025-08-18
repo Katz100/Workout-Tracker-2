@@ -8,8 +8,8 @@ data class RoutineDto(
     @SerialName("id")
     val id: String? = null,
 
-    @SerialName("userId")
-    val userId: String,
+    @SerialName("userid")
+    val userId: String? = null,
 
     @SerialName("name")
     val name: String,
