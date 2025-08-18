@@ -8,6 +8,9 @@ data class ExerciseDto(
     @SerialName("id")
     val id: String? = null,
 
+    @SerialName("userid")
+    val userId: String,
+
     @SerialName("name")
     val name: String,
 
@@ -18,5 +21,6 @@ data class ExerciseDto(
     val sets: Int = 3,
 
     @SerialName("reps")
-    val reps: List<Int> = listOf(8, 10, 12)
+    val reps: List<Int> = listOf(8, 10, 12),
 )
+
