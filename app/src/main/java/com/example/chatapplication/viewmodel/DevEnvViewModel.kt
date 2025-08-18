@@ -29,6 +29,15 @@ class DevEnvViewModel @Inject constructor(
         }
     }
 
+    fun getExercises() {
+        viewModelScope.launch {
+            val result = exerciseRepository.getAllExercises()
+            result.data?.onEach {
+                Log.d("DevEnv", "Exercise: $it")
+            }
+        }
+    }
+
     fun Exercise.asDto(): ExerciseDto {
         return ExerciseDto(
             id = this.id,

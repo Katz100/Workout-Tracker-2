@@ -15,6 +15,7 @@ fun DevTestEnv(
     modifier: Modifier = Modifier,
     onLogOut: () -> Unit,
     onAddExerciseClick: () -> Unit,
+    onGetAllExercisesClicked: () -> Unit,
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
@@ -29,6 +30,12 @@ fun DevTestEnv(
                 onClick = onAddExerciseClick
             ) {
                 Text("Add test exercise")
+            }
+
+            Button(
+                onClick = onGetAllExercisesClicked,
+            ) {
+                Text("Get all exercises")
             }
         }
     }

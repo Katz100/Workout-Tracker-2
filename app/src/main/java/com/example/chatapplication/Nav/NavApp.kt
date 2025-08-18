@@ -81,6 +81,10 @@ fun NavApp(
                         )
                     )
                 },
+                onGetAllExercisesClicked = {
+                    Log.i("DevApp", "Getting all exercises")
+                    devEnvViewModel.getExercises()
+                }
             )
         }
 
