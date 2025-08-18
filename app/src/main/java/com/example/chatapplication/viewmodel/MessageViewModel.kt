@@ -31,14 +31,14 @@ class MessageViewModel @Inject constructor(
     val error: StateFlow<String?> = _error
 
     private fun MessageDto.asDomainModel() : Message {
-        return Message(
-            id = this.id,
-            conversationId = this.conversationId,
-            senderId = this.senderId,
-            read = this.read,
-            body = this.body,
-            createdAt = this.createdAt
-        )
+            return Message(
+                id = this.id ?: "", // or null if your domain model allows it
+                conversationId = this.conversationId,
+                senderId = this.senderId,
+                read = this.read,
+                body = this.body,
+                createdAt = this.createdAt ?: ""
+            )
     }
 
     private fun Message.asDto() : MessageDto {

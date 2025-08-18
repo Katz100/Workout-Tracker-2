@@ -35,7 +35,6 @@ class UserAuthViewModel @Inject constructor(
                 Log.e("AUTHSESSIONVIEW", newSession.toString())
                 _uiState.update {
                     it.copy(session = newSession)
-
                 }
                 Log.e("AUTHSESSIONVIEW", "session value: ${uiState.value.session}")
             }
