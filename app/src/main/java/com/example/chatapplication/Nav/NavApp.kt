@@ -20,11 +20,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.NavHost
+import com.example.chatapplication.NavigationScreens.DevTestEnv
 import com.example.chatapplication.NavigationScreens.HomePage
 import com.example.chatapplication.NavigationScreens.SignIn
 import com.example.chatapplication.NavigationScreens.SignUp
 import com.example.chatapplication.TAG
+import com.example.chatapplication.domain.model.Exercise
 import com.example.chatapplication.domain.model.NetworkResult
+import com.example.chatapplication.viewmodel.DevEnvViewModel
 import com.example.chatapplication.viewmodel.SignInViewModel
 import com.example.chatapplication.viewmodel.SignUpViewModel
 import com.example.chatapplication.viewmodel.UserAuthViewModel
@@ -44,15 +47,42 @@ object SignInScreen
 @Serializable
 object ScreenB
 
+@Serializable
+object DevPage
+
 @Composable
 fun NavApp(
     navController: NavHostController,
     userAuthViewModel: UserAuthViewModel,
+    devEnvViewModel: DevEnvViewModel = hiltViewModel()
 ) {
+    val isDev = true
+
     NavHost(
         navController = navController,
         startDestination = SplashScreen
     ) {
+        composable<DevPage> {
+            DevTestEnv(
+                onLogOut = {
+                    userAuthViewModel.logOut()
+                    navController.navigate(SignInScreen) {
+                    popUpTo(ScreenB) { inclusive = true }
+                    }
+                           },
+                onAddExerciseClick = {
+                    Log.i("DevApp", "Adding test exercise")
+                    devEnvViewModel.insertExercise(
+                        Exercise(
+                            name = "test exercise",
+                            description = "test desc",
+                            sets = 3,
+                            reps = listOf(8, 10, 12),
+                        )
+                    )
+                },
+            )
+        }
 
         // Check to see if the user's session is active
         composable<SplashScreen> {
@@ -68,8 +98,16 @@ fun NavApp(
                     }
                     is SessionStatus.Authenticated -> {
                         Log.e(TAG, "Session authenticated: ${session.toString()}")
-                        navController.navigate(ScreenB) {
-                            popUpTo(SplashScreen) { inclusive = true }
+                        if (isDev) {
+                            Log.i("Nav", "Navigating to dev page")
+                            navController.navigate(DevPage) {
+                                popUpTo(SplashScreen) { inclusive = true }
+                            }
+                        } else {
+                            Log.i("Nav", "Navigating to home page")
+                            navController.navigate(ScreenB) {
+                                popUpTo(SplashScreen) { inclusive = true }
+                            }
                         }
                     }
 
