@@ -5,11 +5,13 @@ import com.example.chatapplication.data.repository.ConversationRepository
 import com.example.chatapplication.data.repository.ExerciseRepository
 import com.example.chatapplication.data.repository.MessageRepository
 import com.example.chatapplication.data.repository.ProfileRepository
+import com.example.chatapplication.data.repository.RoutineRepository
 import com.example.chatapplication.data.repository.impl.AuthenticationRepositoryImpl
 import com.example.chatapplication.data.repository.impl.ConversationRepositoryImpl
 import com.example.chatapplication.data.repository.impl.ExerciseRepositoryImpl
 import com.example.chatapplication.data.repository.impl.MessageRepositoryImpl
 import com.example.chatapplication.data.repository.impl.ProfileRepositoryImpl
+import com.example.chatapplication.data.repository.impl.RoutineRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -20,6 +22,9 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 @Module
 abstract class RepositoryModule {
+
+    @Binds
+    abstract fun bindRoutineRepository(impl: RoutineRepositoryImpl): RoutineRepository
 
     @Binds
     abstract fun bindExerciseRepository(impl: ExerciseRepositoryImpl): ExerciseRepository

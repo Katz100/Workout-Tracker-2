@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatapplication.data.dto.ExerciseDto
 import com.example.chatapplication.data.repository.ExerciseRepository
+import com.example.chatapplication.data.repository.RoutineRepository
 import com.example.chatapplication.domain.model.Exercise
 import com.example.chatapplication.domain.model.NetworkResult
+import com.example.chatapplication.domain.model.Routine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jan.supabase.postgrest.result.PostgrestResult
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DevEnvViewModel @Inject constructor(
     private val exerciseRepository: ExerciseRepository,
+    private val routineRepository: RoutineRepository,
 ) : ViewModel() {
     private val _response = MutableStateFlow<NetworkResult<PostgrestResult>?>(null)
     val response: StateFlow<NetworkResult<PostgrestResult>?> = _response
@@ -34,6 +37,24 @@ class DevEnvViewModel @Inject constructor(
             val result = exerciseRepository.getAllExercises()
             result.data?.onEach {
                 Log.d("DevEnv", "Exercise: $it")
+            }
+        }
+    }
+
+    fun insertRoutine(routine: Routine) {
+        viewModelScope.launch {
+            val result = routineRepository.createNewRoutine(routine)
+            result.data?.onEach {
+                Log.d("DevEnv", "Routine added: $it")
+            }
+        }
+    }
+
+    fun getRoutines() {
+        viewModelScope.launch {
+            val result = routineRepository.getAllRoutines()
+            result.data?.onEach {
+                Log.d("DevEnv", "Routine: $it")
             }
         }
     }

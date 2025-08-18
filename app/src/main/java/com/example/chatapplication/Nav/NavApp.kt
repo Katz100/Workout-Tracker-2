@@ -27,6 +27,7 @@ import com.example.chatapplication.NavigationScreens.SignUp
 import com.example.chatapplication.TAG
 import com.example.chatapplication.domain.model.Exercise
 import com.example.chatapplication.domain.model.NetworkResult
+import com.example.chatapplication.domain.model.Routine
 import com.example.chatapplication.viewmodel.DevEnvViewModel
 import com.example.chatapplication.viewmodel.SignInViewModel
 import com.example.chatapplication.viewmodel.SignUpViewModel
@@ -84,6 +85,18 @@ fun NavApp(
                 onGetAllExercisesClicked = {
                     Log.i("DevApp", "Getting all exercises")
                     devEnvViewModel.getExercises()
+                },
+                onAddRoutineClicked = {
+                    Log.i("DevApp", "Inserting test routine")
+                    devEnvViewModel.insertRoutine(
+                        Routine(
+                           name = "Push day"
+                        )
+                    )
+                },
+                onGetAllRoutinesClicked = {
+                    Log.i("DevApp", "Getting a routines")
+                    devEnvViewModel.getRoutines()
                 }
             )
         }
