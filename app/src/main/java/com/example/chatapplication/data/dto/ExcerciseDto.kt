@@ -20,6 +20,9 @@ data class ExerciseDto(
     @SerialName("sets")
     val sets: Int = 3,
 
+    @SerialName("rest")
+    val rest: Int,
+
     @SerialName("reps")
     val reps: List<Int> = listOf(8, 10, 12),
 )

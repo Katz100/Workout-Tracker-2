@@ -79,6 +79,7 @@ fun NavApp(
                             description = "test desc",
                             sets = 3,
                             reps = listOf(8, 10, 12),
+                            rest = 120,
                         )
                     )
                 },
@@ -100,7 +101,7 @@ fun NavApp(
                 },
                 onGetExercisesForRoutineClicked = {
                   Log.i("DevApp", "Getting exercises for routine")
-                  devEnvViewModel.getUsersRoutineExercises("1a9aeaeb-95cb-4d3e-acd4-0c0df6081527")
+                  devEnvViewModel.getUsersRoutineExercises("120cad98-89d7-4e93-81d0-5df9a088f22b")
                 },
             )
         }

@@ -6,5 +6,6 @@ data class Exercise(
     val name: String,
     val description: String,
     val sets: Int,
+    val rest: Int,
     val reps: List<Int>
 )
