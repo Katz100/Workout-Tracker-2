@@ -8,4 +8,5 @@ import io.github.jan.supabase.postgrest.result.PostgrestResult
 interface ExerciseRepository {
    suspend fun addExercise(exerciseDto: ExerciseDto) : NetworkResult<PostgrestResult>
    suspend fun getAllExercises() : NetworkResult<List<Exercise>>
+   suspend fun getExerciseById(exerciseId: String): NetworkResult<List<Exercise>>
 }

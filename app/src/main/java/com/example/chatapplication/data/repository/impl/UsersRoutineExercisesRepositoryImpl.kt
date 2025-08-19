@@ -15,11 +15,7 @@ import kotlinx.serialization.json.buildJsonObject
 import javax.inject.Inject
 
 
-@Serializable
-data class GetUsersExercisesParams(
-    val user_id: String,
-    val routine_id: String
-)
+
 
 class UsersRoutineExercisesRepositoryImpl @Inject constructor(
     private val postgrest: Postgrest,
@@ -50,6 +46,7 @@ class UsersRoutineExercisesRepositoryImpl @Inject constructor(
         return UsersRoutineExercises(
             exerciseName = this.exerciseName,
             routineName = this.routineName,
+            exerciseId = this.exerciseId,
             sets = this.sets,
             reps = this.reps,
             orderIndex = this.orderIndex

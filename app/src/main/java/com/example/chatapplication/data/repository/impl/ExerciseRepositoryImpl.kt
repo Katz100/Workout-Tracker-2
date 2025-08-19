@@ -56,6 +56,25 @@ class ExerciseRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getExerciseById(exerciseId: String): NetworkResult<List<Exercise>> {
+        val currentUserId = client.auth.currentUserOrNull()?.id
+            ?: return NetworkResult.Error("User does not exist")
+
+        return try {
+            val response = postgrest
+                .from(EXERCISE_TABLE)
+                .select(Columns.ALL) {
+                    filter {
+                        eq("userid", currentUserId)
+                    }
+                }.decodeList<ExerciseDto>()
+                .map { it.toDomain() }
+            NetworkResult.Success(response)
+        } catch (e: Exception) {
+            NetworkResult.Error("Error finding exercise")
+        }
+    }
+
     private fun ExerciseDto.toDomain(): Exercise {
         return Exercise(
             id = this.id,
@@ -63,7 +82,8 @@ class ExerciseRepositoryImpl @Inject constructor(
             name = this.name,
             description = this.description,
             sets = this.sets,
-            reps = this.reps
+            reps = this.reps,
+            rest = this.rest
         )
     }
 }

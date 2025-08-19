@@ -14,6 +14,9 @@ data class ExerciseDto(
     @SerialName("name")
     val name: String,
 
+    @SerialName("rest")
+    val rest: Int,
+
     @SerialName("description")
     val description: String = "",
 

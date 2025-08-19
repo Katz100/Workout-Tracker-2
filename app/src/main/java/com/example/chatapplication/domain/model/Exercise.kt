@@ -3,6 +3,7 @@ package com.example.chatapplication.domain.model
 data class Exercise(
     val id: String? = null,
     val userId: String? = null,
+    val rest: Int,
     val name: String,
     val description: String,
     val sets: Int,
