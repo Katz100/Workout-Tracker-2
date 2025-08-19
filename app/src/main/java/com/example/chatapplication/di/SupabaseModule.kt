@@ -12,6 +12,8 @@ import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.postgrest
 import javax.inject.Singleton
 import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.realtime.Realtime
+import io.github.jan.supabase.realtime.realtime
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -29,7 +31,7 @@ object SupabaseModule {
                 scheme = "com.supabase"
                 host   = "login-callback"
             }
-
+            install(Realtime)
         }
     }
 
@@ -45,12 +47,9 @@ object SupabaseModule {
         return client.auth
     }
 
-
-    /*
     @Provides
     @Singleton
-    fun provideSupabaseStorage(client: SupabaseClient): Storage {
-        return client.storage
+    fun provideSupabaseRealtime(client: SupabaseClient): Realtime {
+        return client.realtime
     }
-    */
 }
