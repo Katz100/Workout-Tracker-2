@@ -8,10 +8,10 @@ data class RoutineExerciseDto(
     @SerialName("id")
     val id: String? = null,
 
-    @SerialName("routineId")
+    @SerialName("routineid")
     val routineId: String,
 
-    @SerialName("exerciseId")
+    @SerialName("exerciseid")
     val exerciseId: String,
 
     @SerialName("orderIndex")

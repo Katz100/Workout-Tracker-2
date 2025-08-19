@@ -97,7 +97,11 @@ fun NavApp(
                 onGetAllRoutinesClicked = {
                     Log.i("DevApp", "Getting a routines")
                     devEnvViewModel.getRoutines()
-                }
+                },
+                onGetExercisesForRoutineClicked = {
+                  Log.i("DevApp", "Getting exercises for routine")
+                  devEnvViewModel.getUsersRoutineExercises("1a9aeaeb-95cb-4d3e-acd4-0c0df6081527")
+                },
             )
         }
 
