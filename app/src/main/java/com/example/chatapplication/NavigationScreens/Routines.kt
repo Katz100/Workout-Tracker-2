@@ -12,12 +12,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chatapplication.Components.RoutineCard
+import com.example.chatapplication.domain.model.Routine
 import com.example.chatapplication.viewmodel.RoutinesViewModel
 
 @Composable
 fun Routines(
     modifier: Modifier = Modifier,
-    routinesViewModel: RoutinesViewModel = hiltViewModel()
+    routinesViewModel: RoutinesViewModel = hiltViewModel(),
+    onRoutineStartClick: (Routine) -> Unit,
+    onMenuClick: (Routine) -> Unit,
 ) {
     val routines = routinesViewModel.usersRoutines.collectAsState().value
     val isEmpty = routinesViewModel.isEmpty.collectAsState().value
@@ -38,12 +41,8 @@ fun Routines(
                 RoutineCard(
                     title = routine.name,
                     subtitle = routine.description ?: "",
-                    onStartClick = {
-                        // TODO: navigate to routine detail/start workout
-                    },
-                    onMenuClick = {
-                        // TODO: open menu actions (edit/delete/etc.)
-                    }
+                    onStartClick = { onRoutineStartClick(routine) },
+                    onMenuClick = { onMenuClick(routine) }
                 )
             }
         }
