@@ -6,5 +6,6 @@ data class UsersRoutineExercises(
     val exerciseId: String,
     val sets: Int,
     val reps: List<Int>,
+    val rest: Int,
     val orderIndex: Int
 )
