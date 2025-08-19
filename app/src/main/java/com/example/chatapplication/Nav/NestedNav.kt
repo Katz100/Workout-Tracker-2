@@ -107,7 +107,14 @@ fun NestedNav(
         ) {
             composable<Screen.Routine> {
                 nestedNavViewModel.setScreen(Screen.Routine)
-                Routines()
+                Routines(
+                    onRoutineStartClick = {
+                        Log.d("NestedNav", "Start routine: $it")
+                    },
+                    onMenuClick = {
+                        Log.d("NestedNav", "Edit routine: $it")
+                    },
+                )
             }
             composable<Screen.Profile> { backStackEntry ->
                 nestedNavViewModel.setScreen(Screen.Profile)
