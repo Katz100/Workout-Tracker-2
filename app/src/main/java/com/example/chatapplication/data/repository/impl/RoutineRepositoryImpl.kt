@@ -6,8 +6,13 @@ import com.example.chatapplication.data.repository.RoutineRepository
 import com.example.chatapplication.domain.model.NetworkResult
 import com.example.chatapplication.domain.model.Routine
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.realtime.selectAsFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class RoutineRepositoryImpl @Inject constructor(
@@ -18,6 +23,13 @@ class RoutineRepositoryImpl @Inject constructor(
     companion object {
         const val ROUTINE_TABLE = "routine"
     }
+
+    @OptIn(SupabaseExperimental::class)
+     override val routineFlow: Flow<List<Routine>> = postgrest
+        .from(ROUTINE_TABLE)
+        .selectAsFlow(RoutineDto::id)
+        .map { list -> list.map { it.toDomain() } }
+
     override suspend fun createNewRoutine(routine: Routine): NetworkResult<List<Routine>> {
         val currentUserId = client.auth.currentUserOrNull()?.id
             ?: return NetworkResult.Error("User does not exist")
