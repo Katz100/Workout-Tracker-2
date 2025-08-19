@@ -11,6 +11,9 @@ data class UsersRoutineExercisesDto(
     @SerialName("routine_name")
     val routineName: String,
 
+    @SerialName("exercise_id")
+    val exerciseId: String,
+
     @SerialName("sets")
     val sets: Int,
 

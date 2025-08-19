@@ -67,6 +67,8 @@ class DevEnvViewModel @Inject constructor(
             val result = usersRoutineExercisesRepository.getUsersExercisesByRoutine(routineId)
             result.data?.onEach {
                 Log.d("DevEnv", "Exercise for routine: $it")
+                val exercise = exerciseRepository.getExerciseById(it.exerciseId)
+                Log.d("DevEnv", "Get exercise by id: ${exercise.data}")
             }
         }
     }
@@ -78,7 +80,8 @@ class DevEnvViewModel @Inject constructor(
             name = this.name,
             description = this.description,
             sets = this.sets,
-            reps = this.reps
+            reps = this.reps,
+            rest = this.rest
         )
     }
 }
