@@ -18,6 +18,7 @@ fun DevTestEnv(
     onGetAllExercisesClicked: () -> Unit,
     onAddRoutineClicked: () -> Unit,
     onGetAllRoutinesClicked: () -> Unit,
+    onGetExercisesForRoutineClicked: () -> Unit,
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
@@ -50,6 +51,12 @@ fun DevTestEnv(
                 onClick = onGetAllRoutinesClicked
             ) {
                 Text("Get all routines")
+            }
+
+            Button(
+                onClick = onGetExercisesForRoutineClicked
+            ) {
+                Text("Get exercises for routine")
             }
         }
     }
