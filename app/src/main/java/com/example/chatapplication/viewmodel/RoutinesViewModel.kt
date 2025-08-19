@@ -26,11 +26,7 @@ class RoutinesViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _usersRoutines.collect {
-                if (it.isEmpty()) {
-                    _isEmpty.value = true
-                } else {
-                    _isEmpty.value = false
-                }
+                _isEmpty.value = it.isEmpty()
             }
         }
         viewModelScope.launch {
