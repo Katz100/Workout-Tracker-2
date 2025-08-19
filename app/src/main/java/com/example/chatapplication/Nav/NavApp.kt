@@ -20,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.NavHost
+import androidx.navigation.navigation
 import com.example.chatapplication.NavigationScreens.DevTestEnv
 import com.example.chatapplication.NavigationScreens.HomePage
 import com.example.chatapplication.NavigationScreens.SignIn
@@ -51,13 +52,19 @@ object ScreenB
 @Serializable
 object DevPage
 
+@Serializable
+object NestedPage
+
+@Serializable
+object NestedScreens
+
 @Composable
 fun NavApp(
     navController: NavHostController,
     userAuthViewModel: UserAuthViewModel,
     devEnvViewModel: DevEnvViewModel = hiltViewModel()
 ) {
-    val isDev = true
+    val isDev = false
 
     NavHost(
         navController = navController,
@@ -127,7 +134,7 @@ fun NavApp(
                             }
                         } else {
                             Log.i("Nav", "Navigating to home page")
-                            navController.navigate(ScreenB) {
+                            navController.navigate(NestedPage) {
                                 popUpTo(SplashScreen) { inclusive = true }
                             }
                         }
@@ -162,7 +169,7 @@ fun NavApp(
             if (signInResponse is NetworkResult.Success && signInResponse.data == true && !hasNavigated) {
                 LaunchedEffect(Unit) {
                     hasNavigated = true
-                    navController.navigate(ScreenB) {
+                    navController.navigate(NestedPage) {
                         popUpTo(SignInScreen) { inclusive = true }
                     }
                 }
@@ -240,5 +247,12 @@ fun NavApp(
                 }
             )
         }
+
+        navigation<NestedPage>(startDestination = NestedScreens) {
+            composable<NestedScreens> {
+                NestedNav(rootNavController = navController)
+            }
+        }
+
     }
 }
