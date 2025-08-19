@@ -54,6 +54,7 @@ class UsersRoutineExercisesRepositoryImpl @Inject constructor(
             reps = this.reps,
             orderIndex = this.orderIndex,
             exerciseId = this.exerciseId,
+            rest = this.rest,
         )
     }
 }
