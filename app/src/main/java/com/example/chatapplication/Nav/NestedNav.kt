@@ -1,13 +1,17 @@
 package com.example.chatapplication.Nav
 
 import android.util.Log
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.compose.material3.Scaffold
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -18,6 +22,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.navigation.compose.composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,6 +45,7 @@ fun NestedNav(
     val currentScreen = nestedNavViewModel.currentScreen.collectAsState().value
     val nestedScreenName = nestedNavViewModel.nestedScreenName.collectAsState().value
     val currentDestination = rootNavController.currentBackStackEntryAsState().value?.destination
+    val showAddIcon = nestedNavViewModel.showAddIcon.collectAsState().value
 
     val nestedNavController = rememberNavController()
 
@@ -53,7 +59,22 @@ fun NestedNav(
         topBar = {
             if (topOfStack) {
                 TopAppBar(
-                    title = { Text(currentScreen.toString()) },
+                    title = {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(currentScreen.toString())
+                            Spacer(modifier = Modifier.weight(1f))
+                            if (showAddIcon) {
+                                IconButton(
+                                    onClick = { Log.i("NestedNav", "+ Clicked") }
+                                ) {
+                                    Icon(Icons.Default.Add, contentDescription = "Add something")
+                                }
+                            }
+                        }
+                    },
                 )
             } else {
                 TopAppBar(
