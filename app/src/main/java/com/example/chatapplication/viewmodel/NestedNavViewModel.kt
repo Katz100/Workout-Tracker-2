@@ -1,5 +1,6 @@
 package com.example.chatapplication.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -39,6 +40,7 @@ class NestedNavViewModel @Inject constructor(): ViewModel() {
     }
 
     fun setScreen(screen: Screen) {
+        Log.i("NAVVIEWMODEL", "Navigating to screen: $screen")
         _currentScreen.value = screen
     }
 
