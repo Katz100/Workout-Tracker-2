@@ -32,7 +32,8 @@ fun RoutineCard(
     title: String,
     subtitle: String,
     onStartClick: () -> Unit,
-    onMenuClick: () -> Unit
+    onMenuClick: () -> Unit,
+    showButton: Boolean = true,
 ) {
     Card(
         modifier = Modifier
@@ -80,18 +81,20 @@ fun RoutineCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
-                Button(
-                    onClick = onStartClick,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF2563EB),
-                        contentColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                    elevation = ButtonDefaults.buttonElevation(
-                        defaultElevation = 10.dp
-                    )
-                ) {
-                    Text("Start")
+                if (showButton) {
+                    Button(
+                        onClick = onStartClick,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF2563EB),
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = 10.dp
+                        )
+                    ) {
+                        Text("Start")
+                    }
                 }
             }
         }
