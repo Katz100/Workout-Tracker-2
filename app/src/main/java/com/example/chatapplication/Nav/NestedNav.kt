@@ -32,6 +32,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.chatapplication.NavigationScreens.Exercises
 import com.example.chatapplication.NavigationScreens.Routines
 import com.example.chatapplication.viewmodel.NestedNavViewModel
 
@@ -141,7 +142,7 @@ fun NestedNav(
                 Text("Profile")
             }
             composable<Screen.Exercise> {
-                Text("Exercise")
+                Exercises()
             }
             composable<Screen.History> {
                 Text("History")

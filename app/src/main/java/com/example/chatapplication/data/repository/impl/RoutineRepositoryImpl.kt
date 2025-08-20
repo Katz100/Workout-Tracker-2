@@ -9,6 +9,8 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.postgrest.query.filter.FilterOperation
+import io.github.jan.supabase.postgrest.query.filter.FilterOperator
 import io.github.jan.supabase.realtime.selectAsFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -27,10 +29,16 @@ class RoutineRepositoryImpl @Inject constructor(
         const val ROUTINE_TABLE = "routine"
     }
 
+    val currentUserId = client.auth.currentUserOrNull()?.id
+        ?: ""
+
     @OptIn(SupabaseExperimental::class)
      override val routineFlow: Flow<List<Routine>> = postgrest
         .from(ROUTINE_TABLE)
-        .selectAsFlow(RoutineDto::id)
+        .selectAsFlow(
+            RoutineDto::id,
+            filter = FilterOperation("userid", FilterOperator.EQ, currentUserId)
+        )
         .map { list -> list.map { it.toDomain() } }
         .retryWhen { cause, attempt, ->
             cause is IOException
