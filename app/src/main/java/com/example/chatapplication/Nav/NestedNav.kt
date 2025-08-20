@@ -48,8 +48,8 @@ fun NestedNav(
     val topOfStack = nestedNavViewModel.topOfStack.collectAsState().value
     val nestedScreenName = nestedNavViewModel.nestedScreenName.collectAsState().value
     val currentDestination = rootNavController.currentBackStackEntryAsState().value?.destination
-
     val nestedNavController = rememberNavController()
+    val currentRoute = nestedNavController.currentBackStackEntryAsState().value?.destination?.route
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -61,7 +61,6 @@ fun NestedNav(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            val currentRoute = nestedNavController.currentBackStackEntryAsState().value?.destination?.route
                             Text(Screen.getScreenTitle(currentRoute))
                             Spacer(modifier = Modifier.weight(1f))
 
