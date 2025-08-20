@@ -48,7 +48,6 @@ fun NestedNav(
     val topOfStack = nestedNavViewModel.topOfStack.collectAsState().value
     val nestedScreenName = nestedNavViewModel.nestedScreenName.collectAsState().value
     val currentDestination = rootNavController.currentBackStackEntryAsState().value?.destination
-    val showAddIcon = nestedNavViewModel.showAddIcon.collectAsState().value
 
     val nestedNavController = rememberNavController()
 
