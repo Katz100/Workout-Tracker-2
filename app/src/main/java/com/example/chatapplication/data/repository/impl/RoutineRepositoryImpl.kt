@@ -11,8 +11,11 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.realtime.selectAsFlow
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.retryWhen
+import okio.IOException
 import javax.inject.Inject
 
 class RoutineRepositoryImpl @Inject constructor(
@@ -29,6 +32,10 @@ class RoutineRepositoryImpl @Inject constructor(
         .from(ROUTINE_TABLE)
         .selectAsFlow(RoutineDto::id)
         .map { list -> list.map { it.toDomain() } }
+        .retryWhen { cause, attempt, ->
+            cause is IOException
+        }
+        .catch { emptyList<Routine>() }
 
     override suspend fun createNewRoutine(routine: Routine): NetworkResult<List<Routine>> {
         val currentUserId = client.auth.currentUserOrNull()?.id
