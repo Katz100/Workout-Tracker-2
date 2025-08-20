@@ -25,6 +25,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.navigation.compose.composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -32,6 +33,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.chatapplication.NavigationScreens.AddExercise
 import com.example.chatapplication.NavigationScreens.Exercises
 import com.example.chatapplication.NavigationScreens.Routines
 import com.example.chatapplication.viewmodel.NestedNavViewModel
@@ -69,7 +71,12 @@ fun NestedNav(
                             Spacer(modifier = Modifier.weight(1f))
                             if (showAddIcon) {
                                 IconButton(
-                                    onClick = { Log.i("NestedNav", "+ Clicked") }
+                                    onClick = {
+                                        Log.i("NestedNav", "+ Clicked")
+                                        if (currentScreen is Screen.Exercise) {
+                                            nestedNavController.navigate(Screen.AddExercise)
+                                        }
+                                    }
                                 ) {
                                     Icon(Icons.Default.Add, contentDescription = "Add something")
                                 }
@@ -146,6 +153,13 @@ fun NestedNav(
             }
             composable<Screen.History> {
                 Text("History")
+            }
+            composable<Screen.AddExercise> {
+                AddExercise(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(20.dp)
+                )
             }
         }
     }
