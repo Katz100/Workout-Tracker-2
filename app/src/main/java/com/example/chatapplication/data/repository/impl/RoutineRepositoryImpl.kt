@@ -15,7 +15,6 @@ import io.github.jan.supabase.realtime.selectAsFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.retryWhen
 import okio.IOException
 import javax.inject.Inject
@@ -29,6 +28,7 @@ class RoutineRepositoryImpl @Inject constructor(
         const val ROUTINE_TABLE = "routine"
     }
 
+    // TODO: update this value for when the user signs in with a new account
     val currentUserId = client.auth.currentUserOrNull()?.id
         ?: ""
 

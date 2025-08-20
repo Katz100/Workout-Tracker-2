@@ -5,10 +5,19 @@ import com.example.chatapplication.data.repository.ExerciseRepository
 import com.example.chatapplication.domain.model.Exercise
 import com.example.chatapplication.domain.model.NetworkResult
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.query.filter.FilterOperation
+import io.github.jan.supabase.postgrest.query.filter.FilterOperator
 import io.github.jan.supabase.postgrest.result.PostgrestResult
+import io.github.jan.supabase.realtime.selectAsFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.retryWhen
+import okio.IOException
 import javax.inject.Inject
 
 class ExerciseRepositoryImpl @Inject constructor(
@@ -19,6 +28,23 @@ class ExerciseRepositoryImpl @Inject constructor(
     companion object {
         const val EXERCISE_TABLE = "exercise"
     }
+
+    // TODO: update this value for when the user signs in with a new account
+    val currentUserId = client.auth.currentUserOrNull()?.id
+        ?: ""
+
+    @OptIn(SupabaseExperimental::class)
+    override val exerciseFlow: Flow<List<Exercise>> = postgrest
+        .from(EXERCISE_TABLE)
+        .selectAsFlow(
+            ExerciseDto::id,
+            filter = FilterOperation("userid", FilterOperator.EQ, currentUserId)
+        )
+        .map { list -> list.map { it.toDomain() } }
+        .retryWhen { cause, attempt, ->
+            cause is IOException
+        }
+        .catch { emptyList<Exercise>() }
 
     override suspend fun addExercise(exerciseDto: ExerciseDto) : NetworkResult<PostgrestResult> {
         val currentUserId = client.auth.currentUserOrNull()?.id
