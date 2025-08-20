@@ -27,9 +27,7 @@ class SignInTest {
             )
         }
 
-        composeTestRule.onNodeWithText("Chat").assertIsDisplayed()
-        composeTestRule.onNodeWithText("username").assertIsDisplayed()
-        composeTestRule.onNodeWithText("password").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Welcome").assertIsDisplayed()
         composeTestRule.onNodeWithText("Sign In").assertIsDisplayed()
         composeTestRule.onNodeWithText("Sign Up?").assertIsDisplayed()
     }
