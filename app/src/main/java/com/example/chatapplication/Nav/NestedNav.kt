@@ -137,7 +137,7 @@ fun NestedNav(
                     },
                 )
             }
-            composable<Screen.Profile> { backStackEntry ->
+            composable<Screen.Profile> {
                 nestedNavViewModel.setScreen(Screen.Profile)
                 Text("Profile")
             }

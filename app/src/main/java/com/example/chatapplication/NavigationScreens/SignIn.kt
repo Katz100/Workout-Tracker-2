@@ -1,6 +1,5 @@
 package com.example.chatapplication.NavigationScreens
 
-import android.R
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -13,8 +12,6 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -25,7 +22,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -33,10 +29,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.chatapplication.Components.CustomButton
+import com.example.chatapplication.Components.CustomTextField
 import com.example.chatapplication.Components.GoogleSignInButton
 import com.example.chatapplication.domain.model.NetworkResult
-import io.ktor.http.ContentType
-
 
 @Composable
 fun SignIn(
@@ -59,7 +55,8 @@ fun SignIn(
             .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(text = "Chat", fontSize = 25.sp, color = Color.Blue,
+        Text(
+            text = "Welcome", fontSize = 25.sp, color = Color.White,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(0.dp, 50.dp, 0.dp, 0.dp),
@@ -72,37 +69,29 @@ fun SignIn(
                 modifier = Modifier.padding(20.dp)
             )
         }
-        OutlinedTextField(
+        CustomTextField(
             value = email,
             onValueChange = { onEmailChange(it) },
-            leadingIcon = {
-                Icon(Icons.Default.Person, contentDescription = "person")
-            },
-            label = {
-                Text(text = "username")
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(0.dp, 20.dp, 0.dp, 0.dp)
-                .contentType(androidx.compose.ui.autofill.ContentType.EmailAddress),
+            placeholder = "Email",
+            leadingIcon = { Icon(Icons.Default.Person, contentDescription = "person") },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
             ),
             keyboardActions = KeyboardActions(
-                onNext =  { passwordFocusRequester.requestFocus() }
-            )
+                onNext = { passwordFocusRequester.requestFocus() }
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(0.dp, 20.dp, 0.dp, 0.dp)
+                .contentType(androidx.compose.ui.autofill.ContentType.EmailAddress),
         )
 
-        OutlinedTextField(
+        CustomTextField(
             value = password,
             onValueChange = { onPasswordChange(it) },
-            leadingIcon = {
-                Icon(Icons.Default.Info, contentDescription = "password")
-            },
-            label = {
-                Text(text = "password")
-            },
+            placeholder = "Password",
+            leadingIcon = { Icon(Icons.Default.Info, contentDescription = "password") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(0.dp, 20.dp, 0.dp, 0.dp)
@@ -121,32 +110,37 @@ fun SignIn(
             )
         )
 
-        OutlinedButton(
-            onClick = { onSignInButtonPressed(email, password)},
-            modifier = Modifier.fillMaxWidth().padding(0.dp, 25.dp, 0.dp, 0.dp)) {
-            Text(
-                text = "Sign In",
-                modifier = Modifier.fillMaxWidth().padding(5.dp),
-                textAlign = TextAlign.Center,
-                fontSize = 20.sp,
-            )
-        }
+        CustomButton(
+            onClick = { onSignInButtonPressed(email, password) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(0.dp, 25.dp, 0.dp, 0.dp),
+            text = "Sign In",
+            textModifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp),
+            textAlign = TextAlign.Center,
+            fontSize = 20.sp,
+        )
 
         GoogleSignInButton(
-            modifier = Modifier.fillMaxWidth().padding(0.dp, 25.dp, 0.dp, 0.dp),
-            onSignIn = {googleIdToken, rawNonce -> onGoogleSignIn(googleIdToken, rawNonce)},
-            onSignInFail = {fail -> }
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(0.dp, 25.dp, 0.dp, 0.dp),
+            onSignIn = { googleIdToken, rawNonce -> onGoogleSignIn(googleIdToken, rawNonce) },
+            onSignInFail = { fail -> }
         )
 
         Text(
             text = "Sign Up?",
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(12.dp)
                 .clickable() {
                     onSignUpButtonPressed()
                 },
             textAlign = TextAlign.Right,
-            color = Color.Blue
+            color = Color.White
         )
 
         if (isError is NetworkResult.Loading) {
@@ -163,9 +157,9 @@ fun SignInPreview() {
         onEmailChange = {},
         password = "password",
         onPasswordChange = {},
-        onSignInButtonPressed = {a, b ->},
+        onSignInButtonPressed = { a, b -> },
         onSignUpButtonPressed = {},
-        onGoogleSignIn = {a, b ->},
+        onGoogleSignIn = { a, b -> },
         isError = NetworkResult.Success(true)
     )
 }
