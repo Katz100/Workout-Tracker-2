@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -23,13 +24,19 @@ fun AddExercise(
     addExerciseViewModel: AddExerciseViewModel = hiltViewModel(),
 
 ) {
+    val exerciseName = addExerciseViewModel.exerciseName.collectAsState().value
+    val desc = addExerciseViewModel.exerciseDescription.collectAsState().value
+    val sets = addExerciseViewModel.sets.collectAsState().value
+    val rest = addExerciseViewModel.rest.collectAsState().value
+    val repsPerSet = addExerciseViewModel.repsPerSet.collectAsState().value
+
     Column(
         modifier = modifier
     ) {
         CustomTextField(
             modifier = Modifier.fillMaxWidth().padding(0.dp, 20.dp, 0.dp, 0.dp),
-            value = "exercise",
-            onValueChange = {  },
+            value = exerciseName,
+            onValueChange = { addExerciseViewModel.onExerciseNameChange(it) },
             placeholder = "Exercise Name",
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
@@ -38,8 +45,8 @@ fun AddExercise(
 
         CustomTextField(
             modifier = Modifier.fillMaxWidth().padding(0.dp, 20.dp, 0.dp, 0.dp),
-            value = "exercise",
-            onValueChange = {  },
+            value = desc,
+            onValueChange = { addExerciseViewModel.onExerciseDescriptionChange(it) },
             placeholder = "Description",
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
@@ -48,8 +55,8 @@ fun AddExercise(
 
         CustomTextField(
             modifier = Modifier.fillMaxWidth().padding(0.dp, 20.dp, 0.dp, 0.dp),
-            value = "exercise",
-            onValueChange = {  },
+            value = sets,
+            onValueChange = { addExerciseViewModel.onSetsChange(it)  },
             placeholder = "Number of sets",
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
@@ -58,8 +65,8 @@ fun AddExercise(
 
         CustomTextField(
             modifier = Modifier.fillMaxWidth().padding(0.dp, 20.dp, 0.dp, 0.dp),
-            value = "exercise",
-            onValueChange = {  },
+            value = rest,
+            onValueChange = { addExerciseViewModel.onRestChange(it) },
             placeholder = "Rest Time (seconds)",
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
@@ -68,11 +75,11 @@ fun AddExercise(
 
         CustomTextField(
             modifier = Modifier.fillMaxWidth().padding(0.dp, 20.dp, 0.dp, 0.dp),
-            value = "exercise",
-            onValueChange = {  },
+            value = repsPerSet,
+            onValueChange = { addExerciseViewModel.onRepsPerSetChange(it) },
             placeholder = "Reps per set (comma-separated, e.g. 12, 10, 8",
             keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next
+                imeAction = ImeAction.Done
             ),
         )
 
@@ -80,7 +87,7 @@ fun AddExercise(
 
         CustomButton(
             modifier = Modifier.fillMaxWidth().padding(0.dp, 25.dp, 0.dp, 0.dp),
-            onClick = {},
+            onClick = { addExerciseViewModel.onAddExerciseButtonClicked() },
             text = "Add",
             textModifier = Modifier.fillMaxWidth().padding(5.dp),
             textAlign = TextAlign.Center,
