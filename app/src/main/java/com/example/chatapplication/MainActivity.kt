@@ -1,5 +1,6 @@
 package com.example.chatapplication
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -31,6 +32,7 @@ class MainActivity : ComponentActivity() {
         supabaseClient.handleDeeplinks(intent) { session ->
             Log.d(TAG, "deep link: $session")
         }
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         enableEdgeToEdge()
         setContent {

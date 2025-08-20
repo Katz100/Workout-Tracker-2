@@ -1,6 +1,7 @@
 package com.example.chatapplication.Nav
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.Text
@@ -45,17 +46,14 @@ fun NestedNav(
     nestedNavViewModel: NestedNavViewModel = hiltViewModel()
 ) {
     val topOfStack = nestedNavViewModel.topOfStack.collectAsState().value
-    val currentScreen = nestedNavViewModel.currentScreen.collectAsState().value
     val nestedScreenName = nestedNavViewModel.nestedScreenName.collectAsState().value
     val currentDestination = rootNavController.currentBackStackEntryAsState().value?.destination
     val showAddIcon = nestedNavViewModel.showAddIcon.collectAsState().value
 
     val nestedNavController = rememberNavController()
 
-    LaunchedEffect(nestedNavController) {
-        snapshotFlow { nestedNavController.currentDestination }
-            .collect { nestedNavViewModel.setTopOfStack(nestedNavController) }
-    }
+
+
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -67,24 +65,31 @@ fun NestedNav(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(currentScreen.toString())
+                            val currentRoute = nestedNavController.currentBackStackEntryAsState().value?.destination?.route
+                            Text(Screen.getScreenTitle(currentRoute))
                             Spacer(modifier = Modifier.weight(1f))
-                            if (showAddIcon) {
+
+                            if (!Screen.unavailableScreensForAdding.contains(currentRoute)) {
                                 IconButton(
                                     onClick = {
-                                        Log.i("NestedNav", "+ Clicked")
-                                        if (currentScreen is Screen.Exercise) {
+                                        Log.i("NestedNav", "+ Clicked for screen: $currentRoute")
+                                        if (currentRoute == Screen.Exercise::class.qualifiedName) {
                                             nestedNavController.navigate(Screen.AddExercise)
                                         }
                                     }
                                 ) {
-                                    Icon(Icons.Default.Add, contentDescription = "Add something")
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = "Add Exercise"
+                                    )
                                 }
                             }
+
                         }
                     },
                 )
             } else {
+                // not used yet
                 TopAppBar(
                     title = { Text(nestedScreenName) },
                     navigationIcon = {
@@ -117,7 +122,6 @@ fun NestedNav(
                         selected = selected,
                         onClick = {
                             nestedNavController.navigate(destination.screen) {
-                                nestedNavViewModel.setScreen(destination.screen)
                                 popUpTo(nestedNavController.graph.findStartDestination().id) {
                                     saveState = true
                                 }
