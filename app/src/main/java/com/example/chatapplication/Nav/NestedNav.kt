@@ -109,6 +109,7 @@ fun NestedNav(
                         selected = selected,
                         onClick = {
                             nestedNavController.navigate(destination.screen) {
+                                nestedNavViewModel.setScreen(destination.screen)
                                 popUpTo(nestedNavController.graph.findStartDestination().id) {
                                     saveState = true
                                 }
@@ -127,7 +128,6 @@ fun NestedNav(
             startDestination = Screen.Routine
         ) {
             composable<Screen.Routine> {
-                nestedNavViewModel.setScreen(Screen.Routine)
                 Routines(
                     onRoutineStartClick = {
                         Log.d("NestedNav", "Start routine: $it")
@@ -138,15 +138,12 @@ fun NestedNav(
                 )
             }
             composable<Screen.Profile> {
-                nestedNavViewModel.setScreen(Screen.Profile)
                 Text("Profile")
             }
             composable<Screen.Exercise> {
-                nestedNavViewModel.setScreen(Screen.Exercise)
                 Text("Exercise")
             }
             composable<Screen.History> {
-                nestedNavViewModel.setScreen(Screen.History)
                 Text("History")
             }
         }
