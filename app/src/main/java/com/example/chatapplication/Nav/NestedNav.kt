@@ -163,7 +163,7 @@ fun NestedNav(
                 val args = backStackEntry.toRoute<Screen.AddExercisesToNewRoutine>()
                 AddExercisesToNewRoutine(
                     routineName = args.name,
-                    routineDesc = args.desc
+                    routineDesc = args.desc,
                 )
             }
             composable<Screen.Profile> {

@@ -1,9 +1,13 @@
 package com.example.chatapplication.data.repository.impl
 
+import android.util.Log
 import com.example.chatapplication.data.dto.ExerciseDto
+import com.example.chatapplication.data.dto.RoutineDto
+import com.example.chatapplication.data.dto.RoutineExerciseDto
 import com.example.chatapplication.data.repository.ExerciseRepository
 import com.example.chatapplication.domain.model.Exercise
 import com.example.chatapplication.domain.model.NetworkResult
+import com.example.chatapplication.domain.model.RoutineExercise
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.auth.auth
@@ -27,6 +31,7 @@ class ExerciseRepositoryImpl @Inject constructor(
 
     companion object {
         const val EXERCISE_TABLE = "exercise"
+        const val ROUTINE_EXERCISE_TABLE = "routine_exercise"
     }
 
     // TODO: update this value for when the user signs in with a new account
@@ -99,6 +104,27 @@ class ExerciseRepositoryImpl @Inject constructor(
             NetworkResult.Success(response)
         } catch (e: Exception) {
             NetworkResult.Error("Error finding exercise")
+        }
+    }
+
+    override suspend fun addExerciseToRoutine(
+        routineId: String,
+        exerciseId: String,
+        orderIndex: Int
+    ): NetworkResult<PostgrestResult> {
+        val exerciseToInsert = RoutineExerciseDto(
+            routineId = routineId,
+            exerciseId = exerciseId,
+            orderIndex = orderIndex,
+        )
+        return try {
+            val response = postgrest
+                .from(ROUTINE_EXERCISE_TABLE)
+                .insert(exerciseToInsert)
+            NetworkResult.Success(response)
+        } catch (e: Exception) {
+            Log.e("EXERCISEREPO", "Error adding exercise to routine: ${e.message}")
+            NetworkResult.Error("Error adding exercise to routine: ${e.message}")
         }
     }
 

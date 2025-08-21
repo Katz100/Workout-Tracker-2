@@ -14,6 +14,6 @@ data class RoutineExerciseDto(
     @SerialName("exerciseid")
     val exerciseId: String,
 
-    @SerialName("orderIndex")
+    @SerialName("orderindex")
     val orderIndex: Int
 )
