@@ -18,12 +18,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chatapplication.Components.CustomButton
+import com.example.chatapplication.R
 import com.example.chatapplication.viewmodel.WorkoutSessionViewModel
 
 @Composable
@@ -41,6 +43,7 @@ fun WorkoutSession(
     val exerciseReps = viewModel.currentExercise.collectAsState().value.reps
     val exerciseRest = viewModel.currentExercise.collectAsState().value.rest
 
+    val context = LocalContext.current
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -97,7 +100,9 @@ fun WorkoutSession(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             CustomButton(
-                onClick = { },
+                onClick = {
+                    viewModel.playSound(context, R.raw.beep)
+                },
                 modifier = Modifier
                     .width(150.dp)
                     .padding(5.dp),

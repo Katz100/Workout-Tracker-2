@@ -1,10 +1,12 @@
 package com.example.chatapplication.viewmodel
 
+import com.example.chatapplication.R
+import android.content.Context
+import android.media.MediaPlayer
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatapplication.data.repository.UsersRoutineExercisesRepository
-import com.example.chatapplication.domain.model.Exercise
 import com.example.chatapplication.domain.model.NetworkResult
 import com.example.chatapplication.domain.model.UsersRoutineExercises
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +22,7 @@ class WorkoutSessionViewModel @Inject constructor(
 
     private var exerciseIndex = 0
 
+    // TODO: convert to regular property
     private val _usersExercises = MutableStateFlow<List<UsersRoutineExercises>>(listOf())
     val usersExercises: StateFlow<List<UsersRoutineExercises>> = _usersExercises
 
@@ -36,6 +39,25 @@ class WorkoutSessionViewModel @Inject constructor(
         orderIndex = 0
     ))
     val currentExercise: StateFlow<UsersRoutineExercises> = _currentExercise
+
+    private var mediaPlayer: MediaPlayer? = null
+
+    fun playSound(context: Context, soundResId: Int) {
+        // Release any existing player before creating a new one
+        mediaPlayer?.release()
+        mediaPlayer = MediaPlayer.create(context, soundResId)
+        mediaPlayer?.setOnCompletionListener {
+            it.release()
+            mediaPlayer = null
+        }
+        mediaPlayer?.start()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        mediaPlayer?.release()
+        mediaPlayer = null
+    }
 
     fun loadRoutine(routineId: String) {
         viewModelScope.launch {
