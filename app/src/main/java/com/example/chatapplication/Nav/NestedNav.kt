@@ -34,7 +34,10 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.chatapplication.NavigationScreens.AddExercise
+import com.example.chatapplication.NavigationScreens.AddExercisesToNewRoutine
+import com.example.chatapplication.NavigationScreens.AddRoutine
 import com.example.chatapplication.NavigationScreens.Exercises
 import com.example.chatapplication.NavigationScreens.Routines
 import com.example.chatapplication.viewmodel.NestedNavViewModel
@@ -64,12 +67,14 @@ fun NestedNav(
                             Text(Screen.getScreenTitle(currentRoute))
                             Spacer(modifier = Modifier.weight(1f))
 
-                            if (!Screen.unavailableScreensForAdding.contains(currentRoute)) {
+                            if (Screen.availableScreensForAdding.contains(currentRoute)) {
                                 IconButton(
                                     onClick = {
                                         Log.i("NestedNav", "+ Clicked for screen: $currentRoute")
                                         if (currentRoute == Screen.Exercise::class.qualifiedName) {
                                             nestedNavController.navigate(Screen.AddExercise)
+                                        } else if (currentRoute == Screen.Routine::class.qualifiedName) {
+                                            nestedNavController.navigate(Screen.AddRoutine)
                                         }
                                     }
                                 ) {
@@ -142,6 +147,23 @@ fun NestedNav(
                     onMenuClick = {
                         Log.d("NestedNav", "Edit routine: $it")
                     },
+                )
+            }
+            composable<Screen.AddRoutine> {
+                AddRoutine(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(20.dp),
+                    onNextButtonClicked = { name, desc ->
+                        nestedNavController.navigate(Screen.AddExercisesToNewRoutine(name, desc))
+                    }
+                )
+            }
+            composable<Screen.AddExercisesToNewRoutine> { backStackEntry ->
+                val args = backStackEntry.toRoute<Screen.AddExercisesToNewRoutine>()
+                AddExercisesToNewRoutine(
+                    routineName = args.name,
+                    routineDesc = args.desc
                 )
             }
             composable<Screen.Profile> {
