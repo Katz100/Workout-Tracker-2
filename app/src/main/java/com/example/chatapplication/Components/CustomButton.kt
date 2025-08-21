@@ -3,6 +3,7 @@ package com.example.chatapplication.Components
 import androidx.annotation.Size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,14 +21,14 @@ fun CustomButton(
     textModifier: Modifier,
     textAlign: TextAlign,
     fontSize: TextUnit,
+    buttonColor: ButtonColors = ButtonDefaults.buttonColors(
+        containerColor = Color(0xFF2563EB),
+        contentColor = Color.White)
 ) {
     Button(
         modifier = modifier,
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF2563EB),
-            contentColor = Color.White
-        ),
+        colors = buttonColor,
         shape = RoundedCornerShape(12.dp),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 10.dp

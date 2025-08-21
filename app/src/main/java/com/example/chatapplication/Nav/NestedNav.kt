@@ -40,6 +40,7 @@ import com.example.chatapplication.NavigationScreens.AddExercisesToNewRoutine
 import com.example.chatapplication.NavigationScreens.AddRoutine
 import com.example.chatapplication.NavigationScreens.Exercises
 import com.example.chatapplication.NavigationScreens.Routines
+import com.example.chatapplication.NavigationScreens.WorkoutSession
 import com.example.chatapplication.viewmodel.NestedNavViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -142,11 +143,19 @@ fun NestedNav(
             composable<Screen.Routine> {
                 Routines(
                     onRoutineStartClick = {
-                        Log.d("NestedNav", "Start routine: $it")
+                        Log.i("NestedNav", "Start routine: $it")
+                        nestedNavController.navigate(Screen.WorkoutSession(it.id.toString()))
                     },
                     onMenuClick = {
-                        Log.d("NestedNav", "Edit routine: $it")
+                        Log.i("NestedNav", "Edit routine: $it")
                     },
+                )
+            }
+            composable<Screen.WorkoutSession> { backStackEntry ->
+                val args = backStackEntry.toRoute<Screen.WorkoutSession>()
+                WorkoutSession(
+                    modifier = Modifier.fillMaxSize(),
+                    routineId = args.routineId
                 )
             }
             composable<Screen.AddRoutine> {
