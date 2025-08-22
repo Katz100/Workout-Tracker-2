@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,11 +50,11 @@ fun NestedNav(
     rootNavController: NavHostController,
     nestedNavViewModel: NestedNavViewModel = hiltViewModel()
 ) {
-    val topOfStack = nestedNavViewModel.topOfStack.collectAsState().value
-    val nestedScreenName = nestedNavViewModel.nestedScreenName.collectAsState().value
     val currentDestination = rootNavController.currentBackStackEntryAsState().value?.destination
     val nestedNavController = rememberNavController()
     val currentRoute = nestedNavController.currentBackStackEntryAsState().value?.destination?.route
+    val isTopLevel = currentRoute in Screen.topLevelScreens
+    val screenTitle = Screen.getScreenTitle(currentRoute)
 
     LaunchedEffect(currentRoute) {
         if (currentRoute !in Screen.topLevelScreens) {
@@ -67,13 +68,14 @@ fun NestedNav(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            if (topOfStack) {
+            if (isTopLevel) {
                 TopAppBar(
                     title = {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+
                             Text(Screen.getScreenTitle(currentRoute))
                             Spacer(modifier = Modifier.weight(1f))
 
@@ -100,14 +102,14 @@ fun NestedNav(
                 )
             } else {
                 TopAppBar(
-                    title = { Text(nestedScreenName) },
+                    title = { Text(screenTitle) },
                     navigationIcon = {
                         IconButton(
                             onClick = {
                                 nestedNavController.popBackStack()
                             }
                         ) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                         }
                     }
                 )
