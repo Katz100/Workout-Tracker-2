@@ -13,4 +13,12 @@ class NestedNavViewModel @Inject constructor(): ViewModel() {
 
     private val _nestedScreenName = MutableStateFlow<String>("Screen Name")
     val nestedScreenName: StateFlow<String> = _nestedScreenName
+
+    fun setTopOfStack(value: Boolean) {
+        _topOfStack.value = value
+    }
+
+    fun setNestedScreenName(name: String) {
+        _nestedScreenName.value = name
+    }
 }

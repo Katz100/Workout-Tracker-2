@@ -55,6 +55,15 @@ fun NestedNav(
     val nestedNavController = rememberNavController()
     val currentRoute = nestedNavController.currentBackStackEntryAsState().value?.destination?.route
 
+    LaunchedEffect(currentRoute) {
+        if (currentRoute !in Screen.topLevelScreens) {
+            nestedNavViewModel.setTopOfStack(false)
+            nestedNavViewModel.setNestedScreenName(Screen.getScreenTitle(currentRoute))
+        } else {
+            nestedNavViewModel.setTopOfStack(true)
+        }
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -90,7 +99,6 @@ fun NestedNav(
                     },
                 )
             } else {
-                // not used yet
                 TopAppBar(
                     title = { Text(nestedScreenName) },
                     navigationIcon = {

@@ -42,5 +42,12 @@ sealed interface Screen {
             Routine::class.qualifiedName,
             Exercise::class.qualifiedName,
         )
+
+        val topLevelScreens = listOf(
+            Routine::class.qualifiedName,
+            Exercise::class.qualifiedName,
+            Profile::class.qualifiedName,
+            History::class.qualifiedName
+        )
     }
 }
