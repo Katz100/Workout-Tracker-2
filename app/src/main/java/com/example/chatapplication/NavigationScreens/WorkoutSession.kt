@@ -40,7 +40,7 @@ fun WorkoutSession(
     val currentExerciseName = viewModel.currentExercise.collectAsState().value.exerciseName
     val currentSet = viewModel.currentSet.collectAsState().value
     val exerciseSetTotal = viewModel.currentExercise.collectAsState().value.sets
-    val exerciseReps = viewModel.currentExercise.collectAsState().value.reps
+    val exerciseReps = viewModel.currentExercise.collectAsState().value.reps[currentSet - 1]
     val exerciseRest = viewModel.currentExercise.collectAsState().value.rest
 
     val context = LocalContext.current
