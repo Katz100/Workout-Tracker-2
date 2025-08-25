@@ -99,22 +99,41 @@ fun WorkoutSession(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            CustomButton(
-                onClick = {
-                    viewModel.playSound(context, R.raw.beep)
-                },
-                modifier = Modifier
-                    .width(150.dp)
-                    .padding(5.dp),
-                text = "Start Rest",
-                textModifier = Modifier,
-                textAlign = TextAlign.Center,
-                fontSize = 20.sp,
-                buttonColor = ButtonDefaults.buttonColors(
-                    containerColor = Color.Gray,
-                    contentColor = Color.White
+            Column {
+                CustomButton(
+                    onClick = {
+                        viewModel.playSound(context, R.raw.beep)
+                    },
+                    modifier = Modifier
+                        .width(150.dp)
+                        .padding(5.dp),
+                    text = "Start Rest",
+                    textModifier = Modifier,
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp,
+                    buttonColor = ButtonDefaults.buttonColors(
+                        containerColor = Color.Gray,
+                        contentColor = Color.White
+                    )
                 )
-            )
+
+                CustomButton(
+                    onClick = {
+                        viewModel.onPreviousSet()
+                    },
+                    modifier = Modifier
+                        .width(150.dp)
+                        .padding(5.dp),
+                    text = "Previous Set",
+                    textModifier = Modifier,
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp,
+                    buttonColor = ButtonDefaults.buttonColors(
+                        containerColor = Color.Gray,
+                        contentColor = Color.White
+                    )
+                )
+            }
             Spacer(modifier = Modifier.weight(1f))
             CustomButton(
                 onClick = { viewModel.onNextSet() },

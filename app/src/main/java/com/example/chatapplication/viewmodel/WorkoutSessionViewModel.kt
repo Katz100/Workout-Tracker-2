@@ -72,6 +72,21 @@ class WorkoutSessionViewModel @Inject constructor(
         }
     }
 
+    fun onPreviousSet() {
+        _currentSet.value--
+        if (_currentSet.value == 0) {
+            if (exerciseIndex != 0) {
+                exerciseIndex--
+                _currentExercise.value = usersExercises.value[exerciseIndex]
+                _currentSet.value = _currentExercise.value.sets
+            } else if (exerciseIndex == 0 && _currentSet.value == 0) {
+                _currentSet.value = 1
+            } else {
+                _currentSet.value = _currentExercise.value.sets
+            }
+        }
+    }
+
     fun onNextSet() {
         _currentSet.value++
         Log.d(
