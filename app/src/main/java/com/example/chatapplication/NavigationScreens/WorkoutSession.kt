@@ -150,14 +150,14 @@ fun WorkoutSession(
 
         Text(
             text = viewModel.formatDuration(restTime),
-            style = MaterialTheme.typography.headlineMedium.copy(
+            style = MaterialTheme.typography.headlineLarge.copy(
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             ),
             textAlign = TextAlign.Center,
-            fontSize = 30.sp,
+            fontSize = 64.sp,
             modifier = Modifier
-                .padding(bottom = 32.dp, top = 32.dp)
+                .padding(bottom = 32.dp, top = 64.dp)
         )
 
     }
