@@ -42,6 +42,7 @@ fun WorkoutSession(
     val exerciseSetTotal = viewModel.currentExercise.collectAsState().value.sets
     val exerciseReps = viewModel.currentExercise.collectAsState().value.reps[currentSet - 1]
     val exerciseRest = viewModel.currentExercise.collectAsState().value.rest
+    val restTime = viewModel.restTime.collectAsState().value
 
     val context = LocalContext.current
     Column(
@@ -102,7 +103,7 @@ fun WorkoutSession(
             Column {
                 CustomButton(
                     onClick = {
-                        viewModel.playSound(context, R.raw.beep)
+                        viewModel.startTimer()
                     },
                     modifier = Modifier
                         .width(150.dp)
@@ -146,6 +147,18 @@ fun WorkoutSession(
                 fontSize = 20.sp,
             )
         }
+
+        Text(
+            text = viewModel.formatDuration(restTime),
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            ),
+            textAlign = TextAlign.Center,
+            fontSize = 30.sp,
+            modifier = Modifier
+                .padding(bottom = 32.dp, top = 32.dp)
+        )
 
     }
 }

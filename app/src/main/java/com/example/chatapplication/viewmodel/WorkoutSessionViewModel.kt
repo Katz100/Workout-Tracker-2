@@ -10,17 +10,27 @@ import com.example.chatapplication.data.repository.UsersRoutineExercisesReposito
 import com.example.chatapplication.domain.model.NetworkResult
 import com.example.chatapplication.domain.model.UsersRoutineExercises
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.Timer
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class WorkoutSessionViewModel @Inject constructor(
+    @ApplicationContext val context: Context,
     private val usersRoutineExercisesRepository: UsersRoutineExercisesRepository
-): ViewModel() {
+) : ViewModel() {
 
     private var exerciseIndex = 0
+
+    private var timerState = TimerState.TIMER_STOP
+
+    private val _restTime = MutableStateFlow<Int>(0)
+    val restTime: StateFlow<Int> = _restTime
 
     // TODO: convert to regular property
     private val _usersExercises = MutableStateFlow<List<UsersRoutineExercises>>(listOf())
@@ -29,28 +39,52 @@ class WorkoutSessionViewModel @Inject constructor(
     private val _currentSet = MutableStateFlow<Int>(1)
     val currentSet: StateFlow<Int> = _currentSet
 
-    private val _currentExercise = MutableStateFlow<UsersRoutineExercises>(UsersRoutineExercises(
-        exerciseName = "Empty",
-        routineName = "",
-        exerciseId = "",
-        sets = 1,
-        reps = listOf(12, 8, 6),
-        rest = 120,
-        orderIndex = 0
-    ))
+    private val _currentExercise = MutableStateFlow<UsersRoutineExercises>(
+        UsersRoutineExercises(
+            exerciseName = "Empty",
+            routineName = "",
+            exerciseId = "",
+            sets = 1,
+            reps = listOf(12, 8, 6),
+            rest = 120,
+            orderIndex = 0
+        )
+    )
     val currentExercise: StateFlow<UsersRoutineExercises> = _currentExercise
 
     private var mediaPlayer: MediaPlayer? = null
 
-    fun playSound(context: Context, soundResId: Int) {
+    fun playSound() {
         // Release any existing player before creating a new one
         mediaPlayer?.release()
-        mediaPlayer = MediaPlayer.create(context, soundResId)
+        mediaPlayer = MediaPlayer.create(context, R.raw.beep2)
         mediaPlayer?.setOnCompletionListener {
             it.release()
             mediaPlayer = null
         }
         mediaPlayer?.start()
+    }
+
+    fun startTimer() {
+        _restTime.value = _currentExercise.value.rest
+        timerState = TimerState.TIMER_START
+        viewModelScope.launch {
+            while (_restTime.value != 0 && timerState != TimerState.TIMER_STOP) {
+                delay(1.seconds)
+                if (timerState == TimerState.TIMER_STOP) break
+                _restTime.value--
+            }
+            if (timerState == TimerState.TIMER_START) {
+                playSound()
+                onNextSet()
+            }
+        }
+    }
+
+    fun formatDuration(seconds: Int): String {
+        val minutes = (seconds % 3600) / 60
+        val secs = seconds % 60
+        return "%02d:%02d".format(minutes, secs)
     }
 
     override fun onCleared() {
@@ -73,6 +107,9 @@ class WorkoutSessionViewModel @Inject constructor(
     }
 
     fun onPreviousSet() {
+        timerState = TimerState.TIMER_STOP
+        if (usersExercises.value.isEmpty()) return
+
         _currentSet.value--
         if (_currentSet.value == 0) {
             if (exerciseIndex != 0) {
@@ -88,6 +125,7 @@ class WorkoutSessionViewModel @Inject constructor(
     }
 
     fun onNextSet() {
+        timerState = TimerState.TIMER_STOP
         _currentSet.value++
         Log.d(
             "WorkoutSessionVM",
@@ -111,8 +149,16 @@ class WorkoutSessionViewModel @Inject constructor(
                     "Moving to next exercise at index $exerciseIndex → ${_currentExercise.value.exerciseName}"
                 )
             } else {
-                Log.d("WorkoutSessionVM", "Workout finished! No more exercises. Last index: $exerciseIndex")
+                Log.d(
+                    "WorkoutSessionVM",
+                    "Workout finished! No more exercises. Last index: $exerciseIndex"
+                )
             }
         }
     }
+}
+
+private enum class TimerState {
+    TIMER_START,
+    TIMER_STOP,
 }
