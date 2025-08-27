@@ -34,7 +34,7 @@ fun WorkoutSession(
     routineId: String,
     viewModel: WorkoutSessionViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(routineId) {
+    LaunchedEffect(Unit) {
         viewModel.loadRoutine(routineId)
     }
     val currentExerciseName = viewModel.currentExercise.collectAsState().value.exerciseName

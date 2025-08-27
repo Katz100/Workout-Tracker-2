@@ -24,14 +24,14 @@ class WorkoutSessionViewModel @Inject constructor(
     private val usersRoutineExercisesRepository: UsersRoutineExercisesRepository
 ) : ViewModel() {
 
-    private var exerciseIndex = 0
+    private val _exerciseIndex = MutableStateFlow(0)
+    val exerciseIndex: StateFlow<Int> = _exerciseIndex
 
     private var timerState = TimerState.TIMER_STOP
 
     private val _restTime = MutableStateFlow<Int>(0)
     val restTime: StateFlow<Int> = _restTime
 
-    // TODO: convert to regular property
     private val _usersExercises = MutableStateFlow<List<UsersRoutineExercises>>(listOf())
     val usersExercises: StateFlow<List<UsersRoutineExercises>> = _usersExercises
 
@@ -109,8 +109,7 @@ class WorkoutSessionViewModel @Inject constructor(
             if (result !is NetworkResult.Error) {
                 _usersExercises.value = result.data ?: emptyList()
                 if (_usersExercises.value.isNotEmpty()) {
-                    exerciseIndex = 0
-                    _currentExercise.value = _usersExercises.value[exerciseIndex]
+                    _currentExercise.value = _usersExercises.value[_exerciseIndex.value]
                 }
             }
         }
@@ -122,11 +121,11 @@ class WorkoutSessionViewModel @Inject constructor(
 
         _currentSet.value--
         if (_currentSet.value == 0) {
-            if (exerciseIndex != 0) {
-                exerciseIndex--
-                _currentExercise.value = usersExercises.value[exerciseIndex]
+            if (_exerciseIndex.value != 0) {
+                _exerciseIndex.value--
+                _currentExercise.value = usersExercises.value[_exerciseIndex.value]
                 _currentSet.value = _currentExercise.value.sets
-            } else if (exerciseIndex == 0 && _currentSet.value == 0) {
+            } else if (_exerciseIndex.value == 0 && _currentSet.value == 0) {
                 _currentSet.value = 1
             } else {
                 _currentSet.value = _currentExercise.value.sets
@@ -150,10 +149,10 @@ class WorkoutSessionViewModel @Inject constructor(
             )
 
             _currentSet.value = 1
-            exerciseIndex++
+            _exerciseIndex.value++
 
-            if (exerciseIndex < _usersExercises.value.size) {
-                _currentExercise.value = _usersExercises.value[exerciseIndex]
+            if (_exerciseIndex.value < _usersExercises.value.size) {
+                _currentExercise.value = _usersExercises.value[_exerciseIndex.value]
                 Log.d(
                     "WorkoutSessionVM",
                     "Moving to next exercise at index $exerciseIndex → ${_currentExercise.value.exerciseName}"
