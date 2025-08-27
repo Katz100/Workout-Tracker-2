@@ -15,7 +15,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.util.Timer
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -35,6 +34,9 @@ class WorkoutSessionViewModel @Inject constructor(
     // TODO: convert to regular property
     private val _usersExercises = MutableStateFlow<List<UsersRoutineExercises>>(listOf())
     val usersExercises: StateFlow<List<UsersRoutineExercises>> = _usersExercises
+
+    private val _isResting = MutableStateFlow<Boolean>(false)
+    val isResting: StateFlow<Boolean> = _isResting
 
     private val _currentSet = MutableStateFlow<Int>(1)
     val currentSet: StateFlow<Int> = _currentSet
@@ -65,18 +67,26 @@ class WorkoutSessionViewModel @Inject constructor(
         mediaPlayer?.start()
     }
 
+    fun stopTimer() {
+        timerState = TimerState.TIMER_STOP
+        _restTime.value = 0
+        _isResting.value = false
+    }
+
     fun startTimer() {
+        _isResting.value = true
         _restTime.value = _currentExercise.value.rest
-        timerState = TimerState.TIMER_START
+        timerState = TimerState.TIMER_ACTIVE
         viewModelScope.launch {
-            while (_restTime.value != 0 && timerState != TimerState.TIMER_STOP) {
+            while (_restTime.value != 0) {
                 delay(1.seconds)
                 if (timerState == TimerState.TIMER_STOP) break
                 _restTime.value--
             }
-            if (timerState == TimerState.TIMER_START) {
+            if (timerState == TimerState.TIMER_ACTIVE) {
                 playSound()
                 onNextSet()
+                stopTimer()
             }
         }
     }
@@ -107,7 +117,7 @@ class WorkoutSessionViewModel @Inject constructor(
     }
 
     fun onPreviousSet() {
-        timerState = TimerState.TIMER_STOP
+        stopTimer()
         if (usersExercises.value.isEmpty()) return
 
         _currentSet.value--
@@ -125,7 +135,7 @@ class WorkoutSessionViewModel @Inject constructor(
     }
 
     fun onNextSet() {
-        timerState = TimerState.TIMER_STOP
+        stopTimer()
         _currentSet.value++
         Log.d(
             "WorkoutSessionVM",
@@ -159,6 +169,6 @@ class WorkoutSessionViewModel @Inject constructor(
 }
 
 private enum class TimerState {
-    TIMER_START,
+    TIMER_ACTIVE,
     TIMER_STOP,
 }

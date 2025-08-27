@@ -43,6 +43,7 @@ fun WorkoutSession(
     val exerciseReps = viewModel.currentExercise.collectAsState().value.reps[currentSet - 1]
     val exerciseRest = viewModel.currentExercise.collectAsState().value.rest
     val restTime = viewModel.restTime.collectAsState().value
+    val isResting = viewModel.isResting.collectAsState().value
 
     val context = LocalContext.current
     Column(
@@ -103,12 +104,16 @@ fun WorkoutSession(
             Column {
                 CustomButton(
                     onClick = {
-                        viewModel.startTimer()
+                        if (isResting) {
+                            viewModel.stopTimer()
+                        } else {
+                            viewModel.startTimer()
+                        }
                     },
                     modifier = Modifier
                         .width(150.dp)
                         .padding(5.dp),
-                    text = "Start Rest",
+                    text = if (isResting) "Stop Timer" else "Start Rest",
                     textModifier = Modifier,
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp,
