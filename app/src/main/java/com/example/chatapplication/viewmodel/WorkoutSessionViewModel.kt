@@ -27,6 +27,9 @@ class WorkoutSessionViewModel @Inject constructor(
     private val _exerciseIndex = MutableStateFlow(0)
     val exerciseIndex: StateFlow<Int> = _exerciseIndex
 
+    private val _isLoading = MutableStateFlow<Boolean>(true)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
     private var timerState = TimerState.TIMER_STOP
 
     private val _restTime = MutableStateFlow<Int>(0)
@@ -111,6 +114,7 @@ class WorkoutSessionViewModel @Inject constructor(
                 if (_usersExercises.value.isNotEmpty()) {
                     _currentExercise.value = _usersExercises.value[_exerciseIndex.value]
                 }
+                _isLoading.value = false
             }
         }
     }
