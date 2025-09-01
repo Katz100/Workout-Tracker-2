@@ -42,7 +42,8 @@ fun Routines(
                     title = routine.name,
                     subtitle = routine.description ?: "",
                     onStartClick = { onRoutineStartClick(routine) },
-                    onMenuClick = { onMenuClick(routine) }
+                    onEditClick = {},
+                    onDeleteClick = {},
                 )
             }
         }

@@ -128,6 +128,23 @@ class ExerciseRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteExercise(exercise: Exercise): NetworkResult<PostgrestResult> {
+        val exerciseId = exercise.id ?: return NetworkResult.Error("Exercise not found")
+
+        return try {
+            val response = postgrest
+                .from(EXERCISE_TABLE)
+                .delete {
+                    filter { eq("id", exerciseId) }
+                }
+            Log.i("EXERCISEREPO", "Deleted exercise: $response")
+            NetworkResult.Success(response)
+        } catch (e: Exception) {
+            Log.e("EXERCISEREPO", "Error deleting exercise: {$e.message}")
+            NetworkResult.Error("Error deleting exercise")
+        }
+    }
+
     private fun ExerciseDto.toDomain(): Exercise {
         return Exercise(
             id = this.id,

@@ -1,5 +1,6 @@
 package com.example.chatapplication.NavigationScreens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
@@ -34,12 +35,15 @@ fun Exercises(
         LazyColumn(
             modifier = modifier.fillMaxSize()
         ) {
-            items(exercises) { routine ->
+            items(exercises) { exercise ->
                 RoutineCard(
-                    title = routine.name,
-                    subtitle = routine.description,
+                    title = exercise.name,
+                    subtitle = exercise.description,
                     onStartClick = { /* no-op */ },
-                    onMenuClick = { /* no-op */ },
+                    onDeleteClick = {
+                        Log.i("Exercises", "Deleting exercise: $exercise")
+                        exercisesViewModel.deleteExercise(exercise) },
+                    onEditClick = {},
                     showButton = false,
                 )
             }
