@@ -2,21 +2,24 @@ package com.example.chatapplication.viewmodel
 
 import com.example.chatapplication.R
 import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatapplication.Timer
+import com.example.chatapplication.TimerService
 import com.example.chatapplication.data.repository.UsersRoutineExercisesRepository
 import com.example.chatapplication.domain.model.NetworkResult
 import com.example.chatapplication.domain.model.UsersRoutineExercises
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class WorkoutSessionViewModel @Inject constructor(
@@ -32,8 +35,7 @@ class WorkoutSessionViewModel @Inject constructor(
 
     private var timerState = TimerState.TIMER_STOP
 
-    private val _restTime = MutableStateFlow<Int>(0)
-    val restTime: StateFlow<Int> = _restTime
+    val restTime: StateFlow<Int> = Timer.restTime
 
     private val _usersExercises = MutableStateFlow<List<UsersRoutineExercises>>(listOf())
     val usersExercises: StateFlow<List<UsersRoutineExercises>> = _usersExercises
@@ -59,8 +61,17 @@ class WorkoutSessionViewModel @Inject constructor(
 
     private var mediaPlayer: MediaPlayer? = null
 
+    init {
+        viewModelScope.launch {
+            Timer.onTimerFinished.collect {
+                playSound()
+                onNextSet()
+                stopTimer()
+            }
+        }
+    }
+
     fun playSound() {
-        // Release any existing player before creating a new one
         mediaPlayer?.release()
         mediaPlayer = MediaPlayer.create(context, R.raw.beep2)
         mediaPlayer?.setOnCompletionListener {
@@ -72,26 +83,21 @@ class WorkoutSessionViewModel @Inject constructor(
 
     fun stopTimer() {
         timerState = TimerState.TIMER_STOP
-        _restTime.value = 0
+        val intent = Intent(context, TimerService::class.java)
+        context.stopService(intent)
         _isResting.value = false
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun startTimer() {
+        // Moves timer logic into foreground service so operations
+        // survive while app is in the background
         _isResting.value = true
-        _restTime.value = _currentExercise.value.rest
         timerState = TimerState.TIMER_ACTIVE
-        viewModelScope.launch {
-            while (_restTime.value != 0) {
-                delay(1.seconds)
-                if (timerState == TimerState.TIMER_STOP) break
-                _restTime.value--
-            }
-            if (timerState == TimerState.TIMER_ACTIVE) {
-                playSound()
-                onNextSet()
-                stopTimer()
-            }
+        val intent = Intent(context, TimerService::class.java).apply {
+            putExtra("duration", _currentExercise.value.rest)
         }
+        context.startForegroundService(intent)
     }
 
     fun formatDuration(seconds: Int): String {
