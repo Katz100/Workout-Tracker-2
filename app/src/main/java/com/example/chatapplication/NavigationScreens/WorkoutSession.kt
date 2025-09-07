@@ -1,5 +1,7 @@
 package com.example.chatapplication.NavigationScreens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +33,7 @@ import com.example.chatapplication.Components.CustomButton
 import com.example.chatapplication.R
 import com.example.chatapplication.viewmodel.WorkoutSessionViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WorkoutSession(
     modifier: Modifier = Modifier,
@@ -74,12 +77,26 @@ fun WorkoutSession(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                text = currentExerciseName,
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = viewModel.previousExercise(),
+                    style = MaterialTheme.typography.labelSmall.copy(color = Color.Gray),
+                )
+
+                Text(
+                    text = currentExerciseName,
+                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                )
+
+                Text(
+                    text = viewModel.nextExercise(),
+                    style = MaterialTheme.typography.labelSmall.copy(color = Color.Gray),
+                )
+            }
 
             Text(
                 text = "$currentSet of $exerciseSetTotal",

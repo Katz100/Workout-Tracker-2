@@ -71,6 +71,14 @@ class WorkoutSessionViewModel @Inject constructor(
         }
     }
 
+    fun nextExercise(): String {
+        return if (_exerciseIndex.value == _usersExercises.value.size - 1) "N/A" else _usersExercises.value[_exerciseIndex.value + 1].exerciseName
+    }
+
+    fun previousExercise(): String {
+        return if (_exerciseIndex.value == 0) "N/A" else _usersExercises.value[_exerciseIndex.value - 1].exerciseName
+    }
+
     fun playSound() {
         mediaPlayer?.release()
         mediaPlayer = MediaPlayer.create(context, R.raw.beep2)
