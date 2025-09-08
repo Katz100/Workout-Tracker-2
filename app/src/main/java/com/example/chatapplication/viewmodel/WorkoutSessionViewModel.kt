@@ -9,9 +9,8 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatapplication.MyReceiver
-import com.example.chatapplication.Timer
-import com.example.chatapplication.TimerService
+import com.example.chatapplication.util.Timer
+import com.example.chatapplication.util.TimerService
 import com.example.chatapplication.data.repository.UsersRoutineExercisesRepository
 import com.example.chatapplication.domain.model.NetworkResult
 import com.example.chatapplication.domain.model.UsersRoutineExercises

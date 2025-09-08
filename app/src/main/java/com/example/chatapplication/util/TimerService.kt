@@ -1,4 +1,4 @@
-package com.example.chatapplication
+package com.example.chatapplication.util
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.example.chatapplication.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel

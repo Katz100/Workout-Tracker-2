@@ -1,4 +1,4 @@
-package com.example.chatapplication
+package com.example.chatapplication.util
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

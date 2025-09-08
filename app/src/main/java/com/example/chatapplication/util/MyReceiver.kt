@@ -1,4 +1,4 @@
-package com.example.chatapplication
+package com.example.chatapplication.util
 
 import android.content.BroadcastReceiver
 import android.content.Context

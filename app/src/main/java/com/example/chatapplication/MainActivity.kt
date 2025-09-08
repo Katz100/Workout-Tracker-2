@@ -15,17 +15,15 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.LaunchedEffect
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.chatapplication.Nav.NavApp
 import com.example.chatapplication.ui.theme.ChatApplicationTheme
+import com.example.chatapplication.util.TimerService
 import com.example.chatapplication.viewmodel.UserAuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.handleDeeplinks
-import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 
 const val TAG = "MainApp"
