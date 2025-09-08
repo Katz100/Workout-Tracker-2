@@ -9,6 +9,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatapplication.MyReceiver
 import com.example.chatapplication.Timer
 import com.example.chatapplication.TimerService
 import com.example.chatapplication.data.repository.UsersRoutineExercisesRepository
@@ -24,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WorkoutSessionViewModel @Inject constructor(
     @ApplicationContext val context: Context,
-    private val usersRoutineExercisesRepository: UsersRoutineExercisesRepository
+    private val usersRoutineExercisesRepository: UsersRoutineExercisesRepository,
 ) : ViewModel() {
 
     private val _exerciseIndex = MutableStateFlow(0)
@@ -66,6 +67,12 @@ class WorkoutSessionViewModel @Inject constructor(
             Timer.onTimerFinished.collect {
                 playSound()
                 onNextSet()
+                stopTimer()
+            }
+        }
+
+        viewModelScope.launch {
+            Timer.onStopTimer.collect {
                 stopTimer()
             }
         }

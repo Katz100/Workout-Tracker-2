@@ -1,6 +1,8 @@
 package com.example.chatapplication
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
@@ -29,10 +31,26 @@ class TimerService: Service() {
         var duration = intent?.getIntExtra("duration", 120) ?: 120
         Timer.restTime.value = duration
 
+        val intent = Intent(applicationContext, MyReceiver::class.java).apply {
+            putExtra("MESSAGE", "Clicked!")
+        }
+        val flag =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                PendingIntent.FLAG_IMMUTABLE
+            else
+                0
+        val pendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            0,
+            intent,
+            flag
+        )
+
         val notification = NotificationCompat.Builder(applicationContext, "timer")
             .setContentTitle("Workout Timer")
             .setSmallIcon(R.drawable.ic_launcher_background)
             .setContentText("Starting timer")
+            .addAction(0, "Stop timer", pendingIntent)
             .build()
 
         startForeground(1, notification)
@@ -46,8 +64,8 @@ class TimerService: Service() {
                     .setContentTitle("Workout Timer")
                     .setSmallIcon(R.drawable.ic_launcher_background)
                     .setContentText("Time left: $duration sec")
+                    .addAction(0, "Stop timer", pendingIntent)
                     .build()
-
                 notificationManager.notify(1, updatedNotification)
                 Timer.restTime.value = duration
             }

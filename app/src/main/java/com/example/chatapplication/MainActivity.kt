@@ -60,10 +60,6 @@ class MainActivity : ComponentActivity() {
         }
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-//        val intent = Intent(this, TimerService::class.java).apply {
-//            putExtra("duration", 120)
-//        }
-//        ContextCompat.startForegroundService(this, intent)
         enableEdgeToEdge()
         setContent {
             ChatApplicationTheme {
@@ -71,12 +67,6 @@ class MainActivity : ComponentActivity() {
                 val userAuthViewModel: UserAuthViewModel = hiltViewModel()
 
                 NavApp(navController, userAuthViewModel)
-            }
-
-            LaunchedEffect(Timer.restTime) {
-                Timer.restTime.collect {
-                    Log.d("MainActivity", "Rest time: $it")
-                }
             }
         }
     }
