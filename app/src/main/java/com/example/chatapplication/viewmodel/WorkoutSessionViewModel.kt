@@ -86,7 +86,11 @@ class WorkoutSessionViewModel @Inject constructor(
         viewModelScope.launch {
             Timer.restTime.collect {
                 if (isResting.value) {
-                    updateNotification(it)
+                    try {
+                        updateNotification(it)
+                    } catch (e: SecurityException) {
+                        Log.i("WorkoutSessionVM", "Notifications disabled: ${e.message}")
+                    }
                 }
             }
         }

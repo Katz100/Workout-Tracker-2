@@ -40,6 +40,7 @@ object WorkoutModule {
             .setContentTitle("Rest Timer")
             .setContentText("Time left: ")
             .setSmallIcon(R.drawable.ic_launcher_background)
+            .setOngoing(true)
             .addAction(0, "Stop timer", pendingIntent)
     }
 
