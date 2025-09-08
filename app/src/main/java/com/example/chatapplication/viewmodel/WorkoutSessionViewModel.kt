@@ -135,6 +135,7 @@ class WorkoutSessionViewModel @Inject constructor(
 
     fun onPreviousSet() {
         stopTimer()
+
         if (usersExercises.value.isEmpty()) return
 
         _currentSet.value--
@@ -154,32 +155,13 @@ class WorkoutSessionViewModel @Inject constructor(
     fun onNextSet() {
         stopTimer()
         _currentSet.value++
-        Log.d(
-            "WorkoutSessionVM",
-            "Next set clicked → Set: ${_currentSet.value} / ${_currentExercise.value.sets}, " +
-                    "ExerciseIndex: $exerciseIndex, Exercise: ${_currentExercise.value.exerciseName}"
-        )
-
         if (_currentSet.value > _currentExercise.value.sets) {
-            Log.d(
-                "WorkoutSessionVM",
-                "Completed exercise at index $exerciseIndex → ${_currentExercise.value.exerciseName}"
-            )
-
             _currentSet.value = 1
             _exerciseIndex.value++
-
             if (_exerciseIndex.value < _usersExercises.value.size) {
                 _currentExercise.value = _usersExercises.value[_exerciseIndex.value]
-                Log.d(
-                    "WorkoutSessionVM",
-                    "Moving to next exercise at index $exerciseIndex → ${_currentExercise.value.exerciseName}"
-                )
             } else {
-                Log.d(
-                    "WorkoutSessionVM",
-                    "Workout finished! No more exercises. Last index: $exerciseIndex"
-                )
+                Log.i("WorkoutSessionVM", "Workout finished")
             }
         }
     }

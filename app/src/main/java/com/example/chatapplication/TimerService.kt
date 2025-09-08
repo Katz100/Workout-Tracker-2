@@ -5,6 +5,7 @@ import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -31,15 +32,23 @@ class TimerService: Service() {
         val notification = NotificationCompat.Builder(applicationContext, "timer")
             .setContentTitle("Workout Timer")
             .setSmallIcon(R.drawable.ic_launcher_background)
-            .setContentText("Timer running...")
+            .setContentText("Starting timer")
             .build()
 
         startForeground(1, notification)
 
         scope.launch {
+            val notificationManager = NotificationManagerCompat.from(applicationContext)
             while (duration > 0) {
                 delay(1.seconds)
                 duration--
+                val updatedNotification = NotificationCompat.Builder(applicationContext, "timer")
+                    .setContentTitle("Workout Timer")
+                    .setSmallIcon(R.drawable.ic_launcher_background)
+                    .setContentText("Time left: $duration sec")
+                    .build()
+
+                notificationManager.notify(1, updatedNotification)
                 Timer.restTime.value = duration
             }
             Timer.restTime.value = 0

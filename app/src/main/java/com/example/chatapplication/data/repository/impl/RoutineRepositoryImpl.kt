@@ -3,6 +3,7 @@ package com.example.chatapplication.data.repository.impl
 import android.util.Log
 import com.example.chatapplication.data.dto.RoutineDto
 import com.example.chatapplication.data.repository.RoutineRepository
+import com.example.chatapplication.data.repository.impl.ExerciseRepositoryImpl.Companion.EXERCISE_TABLE
 import com.example.chatapplication.domain.model.NetworkResult
 import com.example.chatapplication.domain.model.Routine
 import io.github.jan.supabase.SupabaseClient
@@ -11,6 +12,7 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.query.filter.FilterOperation
 import io.github.jan.supabase.postgrest.query.filter.FilterOperator
+import io.github.jan.supabase.postgrest.result.PostgrestResult
 import io.github.jan.supabase.realtime.selectAsFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -83,6 +85,23 @@ class RoutineRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Log.e("ROUTINEREPO", "Error getting routine: ${e.message}")
             NetworkResult.Error("Error getting routines: ${e.message}")
+        }
+    }
+
+    override suspend fun deleteRoutine(routine: Routine): NetworkResult<PostgrestResult> {
+        val routineId = routine.id ?: return NetworkResult.Error("Routine not found")
+
+        return try {
+            val response = postgrest
+                .from(ROUTINE_TABLE)
+                .delete {
+                    filter { eq("id", routineId) }
+                }
+            Log.i("ROUTINEREPO", "Deleted routine: $response")
+            NetworkResult.Success(response)
+        } catch (e: Exception) {
+            Log.e("ROUTINEREPO", "Error deleting routine: {$e.message}")
+            NetworkResult.Error("Error deleting routine")
         }
     }
 

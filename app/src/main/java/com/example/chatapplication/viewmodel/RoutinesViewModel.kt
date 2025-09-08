@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatapplication.data.dto.RoutineDto
 import com.example.chatapplication.data.repository.RoutineRepository
+import com.example.chatapplication.domain.model.Exercise
 import com.example.chatapplication.domain.model.NetworkResult
 import com.example.chatapplication.domain.model.Routine
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,6 +38,16 @@ class RoutinesViewModel @Inject constructor(
             routineRepository.routineFlow.collect { routines ->
                 Log.d("ROUTINEVIEWMODEL", "Collected routines: $routines")
                 _usersRoutines.value = routines
+            }
+        }
+    }
+
+    fun deleteRoutine(routine: Routine) {
+        viewModelScope.launch {
+            val response = routineRepository.deleteRoutine(routine)
+
+            if (response is NetworkResult.Success) {
+                _usersRoutines.value = routineRepository.getAllRoutines().data!!
             }
         }
     }

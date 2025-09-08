@@ -1,7 +1,9 @@
 package com.example.chatapplication.Nav
 
+import android.os.Build
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.Text
@@ -44,6 +46,7 @@ import com.example.chatapplication.NavigationScreens.Routines
 import com.example.chatapplication.NavigationScreens.WorkoutSession
 import com.example.chatapplication.viewmodel.NestedNavViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NestedNav(
@@ -146,9 +149,6 @@ fun NestedNav(
                     onRoutineStartClick = {
                         Log.i("NestedNav", "Start routine: $it")
                         nestedNavController.navigate(Screen.WorkoutSession(it.id.toString()))
-                    },
-                    onMenuClick = {
-                        Log.i("NestedNav", "Edit routine: $it")
                     },
                 )
             }
