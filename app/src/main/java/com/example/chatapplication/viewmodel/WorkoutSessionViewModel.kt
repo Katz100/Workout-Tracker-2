@@ -1,6 +1,5 @@
 package com.example.chatapplication.viewmodel
 
-import android.Manifest
 import com.example.chatapplication.R
 import android.content.Context
 import android.content.Intent
@@ -8,11 +7,9 @@ import android.media.MediaPlayer
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.annotation.RequiresPermission
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatapplication.util.MyReceiver
 import com.example.chatapplication.util.Timer
 import com.example.chatapplication.util.TimerService
 import com.example.chatapplication.data.repository.UsersRoutineExercisesRepository
@@ -28,8 +25,6 @@ import javax.inject.Inject
 @HiltViewModel
 class WorkoutSessionViewModel @Inject constructor(
     @ApplicationContext val context: Context,
-    private val notificationBuilder: NotificationCompat.Builder,
-    private val notificationManager: NotificationManagerCompat,
     private val usersRoutineExercisesRepository: UsersRoutineExercisesRepository,
 ) : ViewModel() {
 
@@ -70,7 +65,6 @@ class WorkoutSessionViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             Timer.onTimerFinished.collect {
-                Log.i("WorkoutSessionVM", "Timer finished")
                 playSound()
                 onNextSet()
                 stopTimer()
@@ -80,18 +74,6 @@ class WorkoutSessionViewModel @Inject constructor(
         viewModelScope.launch {
             Timer.onStopTimer.collect {
                 stopTimer()
-            }
-        }
-
-        viewModelScope.launch {
-            Timer.restTime.collect {
-                if (isResting.value) {
-                    try {
-                        updateNotification(it)
-                    } catch (e: SecurityException) {
-                        Log.i("WorkoutSessionVM", "Notifications disabled: ${e.message}")
-                    }
-                }
             }
         }
     }
@@ -116,38 +98,21 @@ class WorkoutSessionViewModel @Inject constructor(
 
     fun stopTimer() {
         timerState = TimerState.TIMER_STOP
-        notificationManager.cancel(1)
         val intent = Intent(context, TimerService::class.java)
         context.stopService(intent)
         _isResting.value = false
     }
 
-    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     @RequiresApi(Build.VERSION_CODES.O)
     fun startTimer() {
         // Moves timer logic into foreground service so operations
         // survive while app is in the background
-        Log.i("WorkoutSessionVM", "Starting timer")
-        showNotification()
         _isResting.value = true
         timerState = TimerState.TIMER_ACTIVE
         val intent = Intent(context, TimerService::class.java).apply {
             putExtra("duration", _currentExercise.value.rest)
         }
-        context.startService(intent)
-    }
-
-    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
-    fun showNotification() {
-        notificationManager.notify(1, notificationBuilder.build())
-    }
-
-    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
-    fun updateNotification(newDuration: Int) {
-        notificationManager.notify(1, notificationBuilder
-            .setContentText("Rest: $newDuration")
-            .build()
-        )
+        context.startForegroundService(intent)
     }
 
     fun formatDuration(seconds: Int): String {
