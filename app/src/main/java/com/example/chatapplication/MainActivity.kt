@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
     ) { isGranted: Boolean ->
         if (isGranted) {
             // Permission is granted. You can proceed with your foreground service logic.
-         //   startTimerService()
+            //   startTimerService()
         } else {
             // Permission denied. You should inform the user or handle the case gracefully.
             Toast.makeText(this, "Notification permission denied.", Toast.LENGTH_SHORT).show()
@@ -51,6 +51,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        createNotificationChannel(this)
         // handle deeplink from confirmation email
         supabaseClient.handleDeeplinks(intent) { session ->
             Log.d(TAG, "deep link: $session")
@@ -72,6 +73,21 @@ class MainActivity : ComponentActivity() {
         super.onDestroy()
         val intent = Intent(this, TimerService::class.java)
         stopService(intent)
+    }
+
+}
+
+private fun createNotificationChannel(context: Context) {
+    // Create the NotificationChannel, but only on API 26+ because
+    // the NotificationChannel class is not in the Support Library.
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val channel = NotificationChannel(
+            "timer",
+            "Workout Timer",
+            NotificationManager.IMPORTANCE_LOW // not DEFAULT
+        ).apply { description = "Timer running in background" }
+        val manager = context.getSystemService(NotificationManager::class.java)
+        manager.createNotificationChannel(channel)
     }
 
 }
