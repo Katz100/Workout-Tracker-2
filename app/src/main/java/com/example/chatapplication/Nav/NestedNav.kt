@@ -25,10 +25,12 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.navigation.compose.composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -38,12 +40,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.chatapplication.MainActivity
 import com.example.chatapplication.NavigationScreens.AddExercise
 import com.example.chatapplication.NavigationScreens.AddExercisesToNewRoutine
 import com.example.chatapplication.NavigationScreens.AddRoutine
 import com.example.chatapplication.NavigationScreens.Exercises
 import com.example.chatapplication.NavigationScreens.Routines
 import com.example.chatapplication.NavigationScreens.WorkoutSession
+import com.example.chatapplication.util.NavEvent
+import com.example.chatapplication.util.Timer
 import com.example.chatapplication.viewmodel.NestedNavViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -58,6 +63,13 @@ fun NestedNav(
     val currentRoute = nestedNavController.currentBackStackEntryAsState().value?.destination?.route
     val isTopLevel = currentRoute in Screen.topLevelScreens
     val screenTitle = Screen.getScreenTitle(currentRoute)
+    val context = LocalContext.current
+
+    val navEvent = remember { NavEvent(context) }
+
+    LaunchedEffect(Unit) {
+        nestedNavController.addOnDestinationChangedListener(navEvent)
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
