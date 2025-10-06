@@ -63,8 +63,8 @@ dependencies {
 
     implementation ("com.google.dagger:hilt-android:$hilt_version")
     kapt("com.google.dagger:hilt-compiler:$hilt_version")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
+    implementation("androidx.hilt:hilt-navigation-fragment:1.3.0")
 
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.51.1")
     testImplementation("io.mockk:mockk:1.13.17")
