@@ -41,8 +41,7 @@ class WorkoutSessionViewModel @Inject constructor(
     private val _usersExercises = MutableStateFlow<List<UsersRoutineExercises>>(listOf())
     val usersExercises: StateFlow<List<UsersRoutineExercises>> = _usersExercises
 
-    private val _isResting = MutableStateFlow<Boolean>(false)
-    val isResting: StateFlow<Boolean> = _isResting
+    val isResting: StateFlow<Boolean> = Timer.isResting
 
     private val _currentSet = MutableStateFlow<Int>(1)
     val currentSet: StateFlow<Int> = _currentSet
@@ -63,6 +62,11 @@ class WorkoutSessionViewModel @Inject constructor(
     private var mediaPlayer: MediaPlayer? = null
 
     init {
+        viewModelScope.launch {
+            Timer.isResting.collect {
+                Log.i("WKSESSIONVM", "Is resting: $it")
+            }
+        }
         viewModelScope.launch {
             Timer.onTimerFinished.collect {
                 playSound()
@@ -100,14 +104,12 @@ class WorkoutSessionViewModel @Inject constructor(
         timerState = TimerState.TIMER_STOP
         val intent = Intent(context, TimerService::class.java)
         context.stopService(intent)
-        _isResting.value = false
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun startTimer() {
         // Moves timer logic into foreground service so operations
         // survive while app is in the background
-        _isResting.value = true
         timerState = TimerState.TIMER_ACTIVE
         val intent = Intent(context, TimerService::class.java).apply {
             putExtra("duration", _currentExercise.value.rest)

@@ -58,6 +58,7 @@ class TimerService: Service() {
         startForeground(1, notification)
 
         scope.launch {
+            Timer.beginRest()
             val notificationManager = NotificationManagerCompat.from(applicationContext)
             while (duration > 0) {
                 delay(1.seconds)
@@ -90,6 +91,7 @@ class TimerService: Service() {
     override fun onDestroy() {
         scope.cancel()
         Timer.restTime.value = 0
+        Timer.endRest()
         Toast.makeText(
             applicationContext, "Service execution completed",
             Toast.LENGTH_SHORT
