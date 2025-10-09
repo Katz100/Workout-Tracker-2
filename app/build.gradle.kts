@@ -59,12 +59,12 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit.junit)
 
-    val hilt_version = "2.57.2"
+    val hilt_version = "2.51.1"
 
     implementation ("com.google.dagger:hilt-android:$hilt_version")
     kapt("com.google.dagger:hilt-compiler:$hilt_version")
-    implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
-    implementation("androidx.hilt:hilt-navigation-fragment:1.3.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
 
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.51.1")
     testImplementation("io.mockk:mockk:1.13.17")
@@ -76,7 +76,7 @@ dependencies {
     implementation ("androidx.credentials:credentials-play-services-auth:1.5.0")
     implementation ("com.google.android.libraries.identity.googleid:googleid:1.1.1")
     kotlin("kapt")
-    implementation(platform("io.github.jan-tennert.supabase:bom:3.2.4"))
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.0.3"))
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
     implementation("io.github.jan-tennert.supabase:gotrue-kt:2.6.1")
     implementation("io.github.jan-tennert.supabase:realtime-kt")
