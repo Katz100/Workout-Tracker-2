@@ -10,6 +10,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.chatapplication.R
 import com.example.chatapplication.util.MyReceiver
+import com.example.chatapplication.util.WorkoutTrackingService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -60,4 +61,8 @@ object WorkoutModule {
         }
         return notificationManager
     }
+
+    @Singleton
+    @Provides
+    fun provideWorkoutTrackingService() = WorkoutTrackingService()
 }

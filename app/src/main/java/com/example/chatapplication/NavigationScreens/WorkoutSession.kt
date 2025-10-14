@@ -51,6 +51,7 @@ fun WorkoutSession(
     val exerciseRest = viewModel.currentExercise.collectAsState().value.rest
     val restTime = viewModel.restTime.collectAsState().value
     val isResting = viewModel.isResting.collectAsState().value
+    val workoutFinished = viewModel.workoutFinished.collectAsState().value
 
     val context = LocalContext.current
 

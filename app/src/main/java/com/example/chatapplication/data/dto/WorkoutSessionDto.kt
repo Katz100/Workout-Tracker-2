@@ -2,6 +2,7 @@ package com.example.chatapplication.data.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
 
 @Serializable
 data class WorkoutSessionDto(
@@ -14,9 +15,6 @@ data class WorkoutSessionDto(
     @SerialName("routineId")
     val routineId: String,
 
-    @SerialName("startedAt")
-    val startedAt: String? = null,
-
-    @SerialName("completedAt")
-    val completedAt: String? = null
+    @SerialName("totalWorkoutTime")
+    val totalWorkoutTime: Int,
 )

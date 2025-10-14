@@ -6,6 +6,7 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,6 +16,7 @@ import com.example.chatapplication.util.TimerService
 import com.example.chatapplication.data.repository.UsersRoutineExercisesRepository
 import com.example.chatapplication.domain.model.NetworkResult
 import com.example.chatapplication.domain.model.UsersRoutineExercises
+import com.example.chatapplication.util.WorkoutTrackingService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +28,7 @@ import javax.inject.Inject
 class WorkoutSessionViewModel @Inject constructor(
     @ApplicationContext val context: Context,
     private val usersRoutineExercisesRepository: UsersRoutineExercisesRepository,
+    private val workoutTrackingService: WorkoutTrackingService,
 ) : ViewModel() {
 
     private val _exerciseIndex = MutableStateFlow(0)
@@ -61,7 +64,12 @@ class WorkoutSessionViewModel @Inject constructor(
 
     private var mediaPlayer: MediaPlayer? = null
 
+    private val _workoutFinished = MutableStateFlow<Boolean>(false)
+    val workoutFinished: StateFlow<Boolean> = _workoutFinished
+
     init {
+        workoutTrackingService.startSession()
+
         viewModelScope.launch {
             Timer.isResting.collect {
                 Log.i("WKSESSIONVM", "Is resting: $it")
@@ -83,7 +91,7 @@ class WorkoutSessionViewModel @Inject constructor(
     }
 
     fun nextExercise(): String {
-        return if (_exerciseIndex.value == _usersExercises.value.size - 1) "N/A" else _usersExercises.value[_exerciseIndex.value + 1].exerciseName
+        return if (_exerciseIndex.value >= _usersExercises.value.size - 1) "N/A" else _usersExercises.value[_exerciseIndex.value + 1].exerciseName
     }
 
     fun previousExercise(): String {
@@ -163,17 +171,29 @@ class WorkoutSessionViewModel @Inject constructor(
 
     fun onNextSet() {
         stopTimer()
+
+        val list = _usersExercises.value
+        if (list.isEmpty()) return
+
+        val cur = _currentExercise.value
         _currentSet.value++
-        if (_currentSet.value > _currentExercise.value.sets) {
+
+        if (_currentSet.value > cur.sets) {
             _currentSet.value = 1
-            _exerciseIndex.value++
-            if (_exerciseIndex.value < _usersExercises.value.size) {
-                _currentExercise.value = _usersExercises.value[_exerciseIndex.value]
+            val nextIndex = _exerciseIndex.value + 1
+
+            if (nextIndex < list.size) {
+                _exerciseIndex.value = nextIndex
+                _currentExercise.value = list[nextIndex]
             } else {
+                workoutTrackingService.endSession()
+                _workoutFinished.value = true
                 Log.i("WorkoutSessionVM", "Workout finished")
+                Toast.makeText(context, "Time spent workout out: ${workoutTrackingService.getTotalDurationMinutes()}", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
 }
 
 private enum class TimerState {

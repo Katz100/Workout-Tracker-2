@@ -47,6 +47,7 @@ import com.example.chatapplication.NavigationScreens.AddRoutine
 import com.example.chatapplication.NavigationScreens.Exercises
 import com.example.chatapplication.NavigationScreens.Routines
 import com.example.chatapplication.NavigationScreens.WorkoutSession
+import com.example.chatapplication.NavigationScreens.WorkoutSummary
 import com.example.chatapplication.util.NavEvent
 import com.example.chatapplication.util.Timer
 import com.example.chatapplication.viewmodel.NestedNavViewModel
@@ -203,6 +204,9 @@ fun NestedNav(
                         .fillMaxSize()
                         .padding(20.dp)
                 )
+            }
+            composable<Screen.WorkoutSummary> {
+                WorkoutSummary()
             }
         }
     }
