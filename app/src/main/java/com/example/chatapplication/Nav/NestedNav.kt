@@ -166,10 +166,8 @@ fun NestedNav(
                 )
             }
             composable<Screen.WorkoutSession> { backStackEntry ->
-                val args = backStackEntry.toRoute<Screen.WorkoutSession>()
                 WorkoutSession(
                     modifier = Modifier.fillMaxSize(),
-                    routineId = args.routineId
                 )
             }
             composable<Screen.AddRoutine> {

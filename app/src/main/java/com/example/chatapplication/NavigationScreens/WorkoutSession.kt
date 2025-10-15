@@ -37,12 +37,8 @@ import com.example.chatapplication.viewmodel.WorkoutSessionViewModel
 @Composable
 fun WorkoutSession(
     modifier: Modifier = Modifier,
-    routineId: String,
     viewModel: WorkoutSessionViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.loadRoutine(routineId)
-    }
     val isLoading = viewModel.isLoading.collectAsState().value
     val currentExerciseName = viewModel.currentExercise.collectAsState().value.exerciseName
     val currentSet = viewModel.currentSet.collectAsState().value

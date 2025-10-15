@@ -8,8 +8,11 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import com.example.chatapplication.Nav.Screen
 import com.example.chatapplication.util.MyReceiver
 import com.example.chatapplication.util.Timer
 import com.example.chatapplication.util.TimerService
@@ -27,9 +30,12 @@ import javax.inject.Inject
 @HiltViewModel
 class WorkoutSessionViewModel @Inject constructor(
     @ApplicationContext val context: Context,
+    savedStateHandle: SavedStateHandle,
     private val usersRoutineExercisesRepository: UsersRoutineExercisesRepository,
     private val workoutTrackingService: WorkoutTrackingService,
 ) : ViewModel() {
+
+    private val routineArg = savedStateHandle.toRoute<Screen.WorkoutSession>()
 
     private val _exerciseIndex = MutableStateFlow(0)
     val exerciseIndex: StateFlow<Int> = _exerciseIndex
@@ -68,6 +74,7 @@ class WorkoutSessionViewModel @Inject constructor(
     val workoutFinished: StateFlow<Boolean> = _workoutFinished
 
     init {
+        loadRoutine(routineArg.routineId)
         workoutTrackingService.startSession()
 
         viewModelScope.launch {
