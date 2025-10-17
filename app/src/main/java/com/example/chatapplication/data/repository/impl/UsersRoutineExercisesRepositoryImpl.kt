@@ -10,8 +10,6 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.rpc
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonBuilder
-import kotlinx.serialization.json.buildJsonObject
 import javax.inject.Inject
 
 
