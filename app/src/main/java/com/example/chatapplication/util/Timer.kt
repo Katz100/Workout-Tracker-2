@@ -1,5 +1,6 @@
 package com.example.chatapplication.util
 
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -7,22 +8,18 @@ import kotlinx.coroutines.flow.SharedFlow
 object Timer {
     val restTime = MutableStateFlow<Int>(0)
 
-    private val _onTimerFinished = MutableSharedFlow<Unit>()
-    val onTimerFinished: SharedFlow<Unit> = _onTimerFinished
-
-    private val _onStopTimer = MutableSharedFlow<Unit>()
-    val onStopTimer: SharedFlow<Unit> = _onStopTimer
+    val timerEventChannel = Channel<TimerEvent>()
 
     private val _isResting = MutableStateFlow<Boolean>(false)
     val isResting: MutableStateFlow<Boolean> = _isResting
 
     suspend fun onTimerFinished() {
-        _onTimerFinished.emit(Unit)
+        timerEventChannel.send(TimerEvent.OnTimerFinished)
         endRest()
     }
 
     suspend fun onStopTimer() {
-        _onStopTimer.emit(Unit)
+        timerEventChannel.send(TimerEvent.OnStopTimer)
         endRest()
     }
 
@@ -33,4 +30,9 @@ object Timer {
     fun beginRest() {
         _isResting.value = true
     }
+}
+
+sealed interface TimerEvent {
+    data object OnStopTimer : TimerEvent
+    data object OnTimerFinished : TimerEvent
 }

@@ -19,11 +19,14 @@ import com.example.chatapplication.util.TimerService
 import com.example.chatapplication.data.repository.UsersRoutineExercisesRepository
 import com.example.chatapplication.domain.model.NetworkResult
 import com.example.chatapplication.domain.model.UsersRoutineExercises
+import com.example.chatapplication.util.TimerEvent
 import com.example.chatapplication.util.WorkoutTrackingService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -42,8 +45,6 @@ class WorkoutSessionViewModel @Inject constructor(
 
     private val _isLoading = MutableStateFlow<Boolean>(true)
     val isLoading: StateFlow<Boolean> = _isLoading
-
-    private var timerState = TimerState.TIMER_STOP
 
     val restTime: StateFlow<Int> = Timer.restTime
 
@@ -78,21 +79,15 @@ class WorkoutSessionViewModel @Inject constructor(
         workoutTrackingService.startSession()
 
         viewModelScope.launch {
-            Timer.isResting.collect {
-                Log.i("WKSESSIONVM", "Is resting: $it")
-            }
-        }
-        viewModelScope.launch {
-            Timer.onTimerFinished.collect {
-                playSound()
-                onNextSet()
-                stopTimer()
-            }
-        }
-
-        viewModelScope.launch {
-            Timer.onStopTimer.collect {
-                stopTimer()
+            Timer.timerEventChannel.consumeEach { event ->
+                when (event) {
+                    TimerEvent.OnStopTimer -> stopTimer()
+                    TimerEvent.OnTimerFinished -> {
+                        playSound()
+                        onNextSet()
+                        stopTimer()
+                    }
+                }
             }
         }
     }
@@ -116,7 +111,6 @@ class WorkoutSessionViewModel @Inject constructor(
     }
 
     fun stopTimer() {
-        timerState = TimerState.TIMER_STOP
         val intent = Intent(context, TimerService::class.java)
         context.stopService(intent)
     }
@@ -125,7 +119,6 @@ class WorkoutSessionViewModel @Inject constructor(
     fun startTimer() {
         // Moves timer logic into foreground service so operations
         // survive while app is in the background
-        timerState = TimerState.TIMER_ACTIVE
         val intent = Intent(context, TimerService::class.java).apply {
             putExtra("duration", _currentExercise.value.rest)
         }
@@ -196,14 +189,11 @@ class WorkoutSessionViewModel @Inject constructor(
                 workoutTrackingService.endSession()
                 _workoutFinished.value = true
                 Log.i("WorkoutSessionVM", "Workout finished")
+                // temporary toast
                 Toast.makeText(context, "Time spent workout out: ${workoutTrackingService.getTotalDurationMinutes()}", Toast.LENGTH_SHORT).show()
+                workoutTrackingService.reset()
             }
         }
     }
 
-}
-
-private enum class TimerState {
-    TIMER_ACTIVE,
-    TIMER_STOP,
 }
