@@ -22,6 +22,8 @@ sealed interface Screen {
     data class WorkoutSession(val routineId: String) : Screen
     @Serializable
     data object WorkoutSummary : Screen
+    @Serializable
+    data class EditExercise(val exerciseId: String) : Screen
 
     companion object {
         fun getScreenTitle(destination: String?): String {

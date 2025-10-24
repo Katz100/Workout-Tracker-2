@@ -44,6 +44,7 @@ import com.example.chatapplication.MainActivity
 import com.example.chatapplication.NavigationScreens.AddExercise
 import com.example.chatapplication.NavigationScreens.AddExercisesToNewRoutine
 import com.example.chatapplication.NavigationScreens.AddRoutine
+import com.example.chatapplication.NavigationScreens.EditExercise
 import com.example.chatapplication.NavigationScreens.Exercises
 import com.example.chatapplication.NavigationScreens.Routines
 import com.example.chatapplication.NavigationScreens.WorkoutSession
@@ -205,6 +206,9 @@ fun NestedNav(
             }
             composable<Screen.WorkoutSummary> {
                 WorkoutSummary()
+            }
+            composable<Screen.EditExercise> {
+                EditExercise()
             }
         }
     }
