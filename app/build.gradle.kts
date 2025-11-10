@@ -68,7 +68,7 @@ dependencies {
 
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.51.1")
     testImplementation("io.mockk:mockk:1.13.17")
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     kaptTest("com.google.dagger:hilt-android-compiler:2.51.1")
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.51.1")
 
