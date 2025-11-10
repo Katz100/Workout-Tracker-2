@@ -192,7 +192,11 @@ fun NestedNav(
                 Text("Profile")
             }
             composable<Screen.Exercise> {
-                Exercises()
+                Exercises(
+                    onEditExercise = {
+                        nestedNavController.navigate(Screen.EditExercise(it.id.toString()))
+                    }
+                )
             }
             composable<Screen.History> {
                 Text("History")

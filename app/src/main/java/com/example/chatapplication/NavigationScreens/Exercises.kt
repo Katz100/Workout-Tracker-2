@@ -13,12 +13,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chatapplication.Components.RoutineCard
+import com.example.chatapplication.domain.model.Exercise
 import com.example.chatapplication.viewmodel.ExercisesViewModel
 
 @Composable
 fun Exercises(
     modifier: Modifier = Modifier,
-    exercisesViewModel: ExercisesViewModel = hiltViewModel()
+    exercisesViewModel: ExercisesViewModel = hiltViewModel(),
+    onEditExercise: (Exercise) -> Unit,
 ) {
     val exercises = exercisesViewModel.usersRoutines.collectAsState().value
     val isEmpty = exercisesViewModel.isEmpty.collectAsState().value
@@ -43,7 +45,7 @@ fun Exercises(
                     onDeleteClick = {
                         Log.i("Exercises", "Deleting exercise: $exercise")
                         exercisesViewModel.deleteExercise(exercise) },
-                    onEditClick = {},
+                    onEditClick = { onEditExercise(exercise) },
                     showButton = false,
                 )
             }

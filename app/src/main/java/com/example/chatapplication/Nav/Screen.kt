@@ -27,7 +27,6 @@ sealed interface Screen {
 
     companion object {
         fun getScreenTitle(destination: String?): String {
-            Log.d("ScreenDomain", "Destination: $destination")
             return when {
                 destination == Routine::class.qualifiedName -> "Routines"
                 destination == Exercise::class.qualifiedName -> "Exercises"
@@ -36,6 +35,7 @@ sealed interface Screen {
                 destination == AddExercise::class.qualifiedName -> "Add Exercise"
                 destination == AddRoutine::class.qualifiedName -> "Add Routine"
                 destination == WorkoutSummary::class.qualifiedName -> "Workout Summary"
+                destination?.startsWith(EditExercise::class.qualifiedName.toString()) == true -> "Edit Exercise"
                 destination?.startsWith(WorkoutSession::class.qualifiedName.toString()) == true -> "Workout Session"
                 destination?.startsWith(AddExercisesToNewRoutine::class.qualifiedName.toString()) == true ->
                     "Add Exercises to Routine"
