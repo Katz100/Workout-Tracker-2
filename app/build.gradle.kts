@@ -76,7 +76,7 @@ dependencies {
     implementation ("androidx.credentials:credentials-play-services-auth:1.5.0")
     implementation ("com.google.android.libraries.identity.googleid:googleid:1.1.1")
     kotlin("kapt")
-    implementation(platform("io.github.jan-tennert.supabase:bom:3.0.3"))
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.2.6"))
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
     implementation("io.github.jan-tennert.supabase:gotrue-kt:2.6.1")
     implementation("io.github.jan-tennert.supabase:realtime-kt")
