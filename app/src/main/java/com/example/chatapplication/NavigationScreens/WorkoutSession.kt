@@ -2,7 +2,6 @@ package com.example.chatapplication.NavigationScreens
 
 import android.os.Build
 import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,7 +36,6 @@ import com.example.chatapplication.viewmodel.WorkoutSessionViewModel
 @Composable
 fun WorkoutSession(
     modifier: Modifier = Modifier,
-    onBackPressed: () -> Unit,
     viewModel: WorkoutSessionViewModel = hiltViewModel()
 ) {
     val isLoading = viewModel.isLoading.collectAsState().value
@@ -49,8 +47,6 @@ fun WorkoutSession(
     val restTime = viewModel.restTime.collectAsState().value
     val isResting = viewModel.isResting.collectAsState().value
     val workoutFinished = viewModel.workoutFinished.collectAsState().value
-
-    val context = LocalContext.current
 
     if (isLoading) {
         Box(

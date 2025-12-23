@@ -174,7 +174,6 @@ fun NestedNav(
             }
             composable<Screen.WorkoutSession> { backStackEntry ->
                 BackHandler(enabled = true) {
-                    Log.i("NESTEDNAV", "Back pressed")
                     openAlertDialog.value = true
                 }
 
@@ -195,7 +194,6 @@ fun NestedNav(
                 }
                 WorkoutSession(
                     modifier = Modifier.fillMaxSize(),
-                    onBackPressed = {}
                 )
             }
             composable<Screen.AddRoutine> {

@@ -20,9 +20,10 @@ class EditExerciseViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val exerciseRepository: ExerciseRepository
 ) : ViewModel() {
+
     private val exerciseArg = savedStateHandle.toRoute<Screen.EditExercise>()
 
-    private val _exerciseToEdit = MutableStateFlow<Exercise>(
+    private var exerciseToEdit =
         Exercise(
             id = "-1",
             userId = "-1",
@@ -32,8 +33,21 @@ class EditExerciseViewModel @Inject constructor(
             rest = 0,
             reps = listOf()
         )
-    )
-    val exerciseToEdit: StateFlow<Exercise> = _exerciseToEdit
+
+    val _exerciseName = MutableStateFlow<String>("")
+    val exerciseName: StateFlow<String> = _exerciseName
+
+    val _exerciseDescription = MutableStateFlow<String>("")
+    val exerciseDescription: StateFlow<String> = _exerciseDescription
+
+    val _exerciseSets = MutableStateFlow<String>("")
+    val exerciseSets: StateFlow<String> = _exerciseSets
+
+    val _exerciseRest = MutableStateFlow<String>("")
+    val exerciseRest: StateFlow<String> = _exerciseRest
+
+    val _exerciseReps = MutableStateFlow<String>("")
+    val exerciseReps: StateFlow<String> = _exerciseReps
 
     init {
         viewModelScope.launch {
@@ -41,8 +55,34 @@ class EditExerciseViewModel @Inject constructor(
 
             if (response !is NetworkResult.Error && response.data != null) {
                 Log.i("EditExerciseVM", "Received response: ${response.data}")
-                _exerciseToEdit.value = response.data.first()
+                exerciseToEdit = response.data.first()
+                onNameChange(exerciseToEdit.name)
+                onDescChange(exerciseToEdit.description)
+                onSetsChange(exerciseToEdit.sets.toString())
+                onRestChange(exerciseToEdit.rest.toString())
+                onRepsChange(exerciseToEdit.reps.joinToString(", ")
+                )
             }
         }
+    }
+
+    fun onNameChange(value: String) {
+        _exerciseName.value = value
+    }
+
+    fun onDescChange(value: String) {
+        _exerciseDescription.value = value
+    }
+
+    fun onSetsChange(value: String) {
+        _exerciseSets.value = value
+    }
+
+    fun onRestChange(value: String) {
+        _exerciseRest.value = value
+    }
+
+    fun onRepsChange(value: String) {
+        _exerciseReps.value = value
     }
 }
