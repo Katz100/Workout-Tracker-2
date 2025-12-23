@@ -17,5 +17,4 @@ class NavEvent(private val context: Context): NavController.OnDestinationChanged
         val intent = Intent(context, TimerService::class.java)
         context.stopService(intent)
     }
-
 }

@@ -2,6 +2,7 @@ package com.example.chatapplication.NavigationScreens
 
 import android.os.Build
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +20,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +37,7 @@ import com.example.chatapplication.viewmodel.WorkoutSessionViewModel
 @Composable
 fun WorkoutSession(
     modifier: Modifier = Modifier,
+    onBackPressed: () -> Unit,
     viewModel: WorkoutSessionViewModel = hiltViewModel()
 ) {
     val isLoading = viewModel.isLoading.collectAsState().value
