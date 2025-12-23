@@ -23,6 +23,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
@@ -69,8 +70,12 @@ fun NestedNav(
 
     val navEvent = remember { NavEvent(context) }
 
-    LaunchedEffect(Unit) {
+    DisposableEffect(nestedNavController, navEvent) {
         nestedNavController.addOnDestinationChangedListener(navEvent)
+
+        onDispose {
+            nestedNavController.removeOnDestinationChangedListener(navEvent)
+        }
     }
 
     Scaffold(
