@@ -94,7 +94,7 @@ fun EditExercise(
         ) {
             CustomButton(
                 modifier = Modifier.weight(1f),
-                onClick = {},
+                onClick = { /** TODO: pop stack **/ },
                 text = "Cancel",
                 textModifier = Modifier.fillMaxWidth().padding(5.dp),
                 textAlign = TextAlign.Center,
@@ -105,7 +105,7 @@ fun EditExercise(
 
             CustomButton(
                 modifier = Modifier.weight(1f),
-                onClick = {},
+                onClick = { viewModel.onSaveExercise() },
                 text = "Save Exercise",
                 textModifier = Modifier.fillMaxWidth().padding(5.dp),
                 textAlign = TextAlign.Center,

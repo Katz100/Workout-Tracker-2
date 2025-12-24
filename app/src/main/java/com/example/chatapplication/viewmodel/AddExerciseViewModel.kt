@@ -3,10 +3,8 @@ package com.example.chatapplication.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatapplication.NavigationScreens.Exercises
 import com.example.chatapplication.data.dto.ExerciseDto
 import com.example.chatapplication.data.repository.ExerciseRepository
-import com.example.chatapplication.domain.model.Exercise
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -60,6 +58,7 @@ class AddExerciseViewModel @Inject constructor(
                 _sets.value.isEmpty()
     }
 
+    // TODO: move to util
     fun convertStringToList(str: String): List<Int> {
         return str.split(",")
             .map { it.trim().toInt() }

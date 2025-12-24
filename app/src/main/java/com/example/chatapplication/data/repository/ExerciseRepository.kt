@@ -12,5 +12,6 @@ interface ExerciseRepository {
    suspend fun getExerciseById(exerciseId: String): NetworkResult<List<Exercise>>
    suspend fun addExerciseToRoutine(routineId: String, exerciseId: String, orderIndex: Int): NetworkResult<PostgrestResult>
    suspend fun deleteExercise(exercise: Exercise): NetworkResult<PostgrestResult>
+   suspend fun editExercise(newExercise: Exercise, exerciseId: String): NetworkResult<PostgrestResult>
    val exerciseFlow: Flow<List<Exercise>>
 }

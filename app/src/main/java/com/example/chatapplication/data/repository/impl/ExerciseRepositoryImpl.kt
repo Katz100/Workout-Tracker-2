@@ -2,12 +2,10 @@ package com.example.chatapplication.data.repository.impl
 
 import android.util.Log
 import com.example.chatapplication.data.dto.ExerciseDto
-import com.example.chatapplication.data.dto.RoutineDto
 import com.example.chatapplication.data.dto.RoutineExerciseDto
 import com.example.chatapplication.data.repository.ExerciseRepository
 import com.example.chatapplication.domain.model.Exercise
 import com.example.chatapplication.domain.model.NetworkResult
-import com.example.chatapplication.domain.model.RoutineExercise
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.auth.auth
@@ -142,6 +140,29 @@ class ExerciseRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Log.e("EXERCISEREPO", "Error deleting exercise: {$e.message}")
             NetworkResult.Error("Error deleting exercise")
+        }
+    }
+
+    override suspend fun editExercise(newExercise: Exercise, exerciseId: String): NetworkResult<PostgrestResult> {
+        return try {
+            val response = postgrest
+                .from(EXERCISE_TABLE)
+                .update(
+                    {
+                        set("name", newExercise.name)
+                        set("description", newExercise.description)
+                        set("sets", newExercise.sets)
+                        set("rest", newExercise.rest)
+                        set("reps", newExercise.reps)
+                    }
+                ) {
+                    filter {
+                        eq("id", exerciseId)
+                    }
+                }
+            NetworkResult.Success(response)
+        } catch (e: Exception) {
+            NetworkResult.Error("Error updating exercise")
         }
     }
 
