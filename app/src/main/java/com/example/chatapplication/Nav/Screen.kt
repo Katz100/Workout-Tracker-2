@@ -1,6 +1,5 @@
 package com.example.chatapplication.Nav
 
-import android.util.Log
 import kotlinx.serialization.Serializable
 
 sealed interface Screen {
