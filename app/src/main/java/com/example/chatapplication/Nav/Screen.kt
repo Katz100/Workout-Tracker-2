@@ -2,7 +2,6 @@ package com.example.chatapplication.Nav
 
 import kotlinx.serialization.Serializable
 
-// TODO: do something
 sealed interface Screen {
     @Serializable
     data object Routine : Screen
