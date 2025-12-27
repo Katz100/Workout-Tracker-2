@@ -77,9 +77,9 @@ class WorkoutSessionViewModel @Inject constructor(
     init {
         loadRoutine(routineArg.routineId)
         workoutTrackingService.startSession()
-
         viewModelScope.launch {
-            Timer.timerEventChannel.consumeEach { event ->
+            Timer.timerEventChannel.receiveAsFlow().collect { event ->
+                Log.i("TimerService", "From vm, collect: $event")
                 when (event) {
                     TimerEvent.OnStopTimer -> stopTimer()
                     TimerEvent.OnTimerFinished -> {

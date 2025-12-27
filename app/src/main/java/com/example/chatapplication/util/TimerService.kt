@@ -73,7 +73,9 @@ class TimerService: Service() {
                 Timer.restTime.value = duration
             }
             Timer.restTime.value = 0
+            Log.i("TimerService", "Attempting to stop timer")
             Timer.onTimerFinished()
+            Log.i("TimerService", "Timer stopped")
             stopSelf()
         }
 
@@ -82,7 +84,7 @@ class TimerService: Service() {
 
 
     override fun stopService(name: Intent?): Boolean {
-        Log.d("Stopping","Stopping Service")
+        Log.d("TimerService","Stopping Service")
         scope.cancel()
         Timer.restTime.value = 0
         return super.stopService(name)
@@ -96,7 +98,7 @@ class TimerService: Service() {
             applicationContext, "Service execution completed",
             Toast.LENGTH_SHORT
         ).show()
-        Log.d("Stopped","Service Stopped")
+        Log.d("TimerService","Service Stopped")
         super.onDestroy()
     }
 }

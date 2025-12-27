@@ -17,11 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.autofill.contentType
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -84,7 +86,7 @@ fun SignIn(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(0.dp, 20.dp, 0.dp, 0.dp)
-                .contentType(androidx.compose.ui.autofill.ContentType.EmailAddress),
+                .semantics { contentType = ContentType.Username },
         )
 
         CustomTextField(
@@ -95,7 +97,7 @@ fun SignIn(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(0.dp, 20.dp, 0.dp, 0.dp)
-                .contentType(androidx.compose.ui.autofill.ContentType.Password)
+                .semantics { contentType = ContentType.Password }
                 .focusRequester(passwordFocusRequester),
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(

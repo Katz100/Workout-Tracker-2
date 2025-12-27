@@ -7,18 +7,21 @@ import kotlinx.coroutines.flow.StateFlow
 object Timer {
     val restTime = MutableStateFlow<Int>(0)
 
-    val timerEventChannel = Channel<TimerEvent>()
+    // TODO: Change timerEventChannel to be StateFlow or SharedFlow
+    // Using Channel can cause methods to suspend indefinitely
+    // Needs to be received as a hot flow anyway so multiple sessions work properly.
+    val timerEventChannel = Channel<TimerEvent>(1)
 
     private val _isResting = MutableStateFlow<Boolean>(false)
     val isResting: StateFlow<Boolean> = _isResting
 
-    suspend fun onTimerFinished() {
-        timerEventChannel.send(TimerEvent.OnTimerFinished)
+     fun onTimerFinished() {
+        timerEventChannel.trySend(TimerEvent.OnTimerFinished)
         endRest()
     }
 
-    suspend fun onStopTimer() {
-        timerEventChannel.send(TimerEvent.OnStopTimer)
+     fun onStopTimer() {
+        timerEventChannel.trySend(TimerEvent.OnStopTimer)
         endRest()
     }
 
