@@ -5,3 +5,4 @@
 - Uses Supabase for data storage
 - Offline syncroniztion not supported
 - Repository implementations can be changed to support Room (or other databases) with minimial changes inside viewmodels
+- Sign in options include email/password and Google Sign In (Change credentials in GoogleSignInButton.kt)
