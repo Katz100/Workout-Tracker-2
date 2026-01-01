@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -66,9 +67,12 @@ fun SkipToExerciseDialog(
                 )
             }
 
+            HorizontalDivider()
+
             Column (
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(8.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 exercises.forEach { exercise ->
