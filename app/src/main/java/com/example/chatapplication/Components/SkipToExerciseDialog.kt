@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Card
@@ -36,7 +38,7 @@ fun SkipToExerciseDialog(
     ) {
         // TODO: Add custom background color to colors.xml
         Card(
-            modifier = Modifier.size(width = 240.dp, height = 400.dp),
+            modifier = Modifier.size(width = 260.dp, height = 400.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color(0xFF1C2533)
             )
@@ -44,7 +46,7 @@ fun SkipToExerciseDialog(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
+                    .padding(16.dp)
             ) {
                 Text(
                     text = "Skip to exercise",
@@ -65,10 +67,25 @@ fun SkipToExerciseDialog(
             }
 
             Column (
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
             ) {
                 exercises.forEach { exercise ->
-                    Text(exercise.exerciseName)
+                    if (exercise == currentExercise) {
+                        ExerciseItem(
+                            sets = exercise.sets,
+                            exerciseName = exercise.exerciseName,
+                            current = true,
+                            onExerciseSelected = { onExerciseSelected(exercise) }
+                        )
+                    } else {
+                        ExerciseItem(
+                            sets = exercise.sets,
+                            exerciseName = exercise.exerciseName,
+                            onExerciseSelected = { onExerciseSelected(exercise) }
+                        )
+                    }
                 }
             }
         }

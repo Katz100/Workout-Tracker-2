@@ -72,6 +72,7 @@ fun WorkoutSession(
                 onExerciseSelected = { exercise ->
                     Log.i("WorkoutSession", "Exercise selected: ${exercise.exerciseName}")
                     openSkipToExerciseDialog.value = false
+                    viewModel.skipToExercise(exercise)
                 }
             )
         }

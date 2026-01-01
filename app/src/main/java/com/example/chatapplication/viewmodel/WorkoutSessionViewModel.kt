@@ -18,6 +18,7 @@ import com.example.chatapplication.util.Timer
 import com.example.chatapplication.util.TimerService
 import com.example.chatapplication.data.repository.UsersRoutineExercisesRepository
 import com.example.chatapplication.domain.model.NetworkResult
+import com.example.chatapplication.domain.model.RoutineExercise
 import com.example.chatapplication.domain.model.UsersRoutineExercises
 import com.example.chatapplication.util.TimerEvent
 import com.example.chatapplication.util.WorkoutTrackingService
@@ -193,6 +194,19 @@ class WorkoutSessionViewModel @Inject constructor(
                 Toast.makeText(context, "Time spent workout out: ${workoutTrackingService.getTotalDurationMinutes()}", Toast.LENGTH_SHORT).show()
                 workoutTrackingService.reset()
             }
+        }
+    }
+
+    fun skipToExercise(exercise: UsersRoutineExercises) {
+        if (exercise.orderIndex > _exerciseIndex.value) {
+            while (_currentExercise.value !== exercise) {
+                onNextSet()
+            }
+        } else {
+            while (_currentExercise.value !== exercise) {
+                onPreviousSet()
+            }
+            _currentSet.value = 1
         }
     }
 }
