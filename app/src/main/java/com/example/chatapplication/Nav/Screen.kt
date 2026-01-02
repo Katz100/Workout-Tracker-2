@@ -23,6 +23,8 @@ sealed interface Screen {
     data object WorkoutSummary : Screen
     @Serializable
     data class EditExercise(val exerciseId: String) : Screen
+    @Serializable
+    data class EditRoutine(val routineId: String) : Screen
 
     companion object {
         fun getScreenTitle(destination: String?): String {
@@ -38,6 +40,7 @@ sealed interface Screen {
                 destination?.startsWith(WorkoutSession::class.qualifiedName.toString()) == true -> "Workout Session"
                 destination?.startsWith(AddExercisesToNewRoutine::class.qualifiedName.toString()) == true ->
                     "Add Exercises to Routine"
+                destination?.startsWith(EditRoutine::class.qualifiedName.toString()) == true -> "Edit Routine"
                 else -> "Unknown"
             }
         }

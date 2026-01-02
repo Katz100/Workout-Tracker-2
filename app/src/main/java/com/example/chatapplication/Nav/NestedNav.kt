@@ -46,6 +46,7 @@ import com.example.chatapplication.NavigationScreens.AddExercise
 import com.example.chatapplication.NavigationScreens.AddExercisesToNewRoutine
 import com.example.chatapplication.NavigationScreens.AddRoutine
 import com.example.chatapplication.NavigationScreens.EditExercise
+import com.example.chatapplication.NavigationScreens.EditRoutine
 import com.example.chatapplication.NavigationScreens.Exercises
 import com.example.chatapplication.NavigationScreens.Routines
 import com.example.chatapplication.NavigationScreens.WorkoutSession
@@ -170,6 +171,10 @@ fun NestedNav(
                         Log.i("NestedNav", "Start routine: $it")
                         nestedNavController.navigate(Screen.WorkoutSession(it.id.toString()))
                     },
+                    onEditRoutine = {
+                        Log.i("NestedNav", "Edit routine: $it")
+                        nestedNavController.navigate(Screen.EditRoutine(it.id.toString()))
+                    }
                 )
             }
             composable<Screen.WorkoutSession> { backStackEntry ->
@@ -238,6 +243,9 @@ fun NestedNav(
             }
             composable<Screen.EditExercise> {
                 EditExercise()
+            }
+            composable<Screen.EditRoutine> {
+                EditRoutine()
             }
         }
     }

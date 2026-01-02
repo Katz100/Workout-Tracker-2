@@ -20,6 +20,7 @@ fun Routines(
     modifier: Modifier = Modifier,
     routinesViewModel: RoutinesViewModel = hiltViewModel(),
     onRoutineStartClick: (Routine) -> Unit,
+    onEditRoutine: (Routine) -> Unit,
 ) {
     val routines = routinesViewModel.usersRoutines.collectAsState().value
     val isEmpty = routinesViewModel.isEmpty.collectAsState().value
@@ -41,7 +42,7 @@ fun Routines(
                     title = routine.name,
                     subtitle = routine.description ?: "",
                     onStartClick = { onRoutineStartClick(routine) },
-                    onEditClick = {},
+                    onEditClick = { onEditRoutine(routine) },
                     onDeleteClick = { routinesViewModel.deleteRoutine(routine) },
                 )
             }
