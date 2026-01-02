@@ -109,6 +109,9 @@ dependencies {
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // reorderable column
+    implementation("sh.calvin.reorderable:reorderable:3.0.0")
 }
 
 
