@@ -55,8 +55,13 @@ class EditRoutineViewModel @Inject constructor(
     }
 
     fun reorderExercises(from: Int, to: Int) {
-        _exercises.value.toMutableList().apply {
+        val current = _exercises.value
+        if (from == to) return
+        if (from !in current.indices || to !in current.indices) return
+
+        val updated = current.toMutableList().apply {
             add(to, removeAt(from))
         }
+        _exercises.value = updated
     }
 }
