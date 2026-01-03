@@ -245,7 +245,11 @@ fun NestedNav(
                 EditExercise()
             }
             composable<Screen.EditRoutine> {
-                EditRoutine()
+                EditRoutine(
+                    onCancel = {
+                        nestedNavController.popBackStack()
+                    }
+                )
             }
         }
     }
