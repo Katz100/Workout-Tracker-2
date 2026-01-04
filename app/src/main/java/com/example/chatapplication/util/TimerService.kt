@@ -1,14 +1,20 @@
 package com.example.chatapplication.util
 
+import android.Manifest
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.example.chatapplication.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +35,7 @@ class TimerService: Service() {
         super.onCreate()
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         var duration = intent?.getIntExtra("duration", 120) ?: 120
         Timer.restTime.value = duration
@@ -37,10 +44,7 @@ class TimerService: Service() {
             putExtra("MESSAGE", "Clicked!")
         }
         val flag =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                PendingIntent.FLAG_IMMUTABLE
-            else
-                0
+            PendingIntent.FLAG_IMMUTABLE
         val pendingIntent = PendingIntent.getBroadcast(
             applicationContext,
             0,
@@ -58,24 +62,7 @@ class TimerService: Service() {
         startForeground(1, notification)
 
         scope.launch {
-            Timer.beginRest()
-            val notificationManager = NotificationManagerCompat.from(applicationContext)
-            while (duration > 0) {
-                delay(1.seconds)
-                duration--
-                val updatedNotification = NotificationCompat.Builder(applicationContext, "timer")
-                    .setContentTitle("Workout Timer")
-                    .setSmallIcon(R.drawable.ic_launcher_background)
-                    .setContentText("Time left: $duration sec")
-                    .addAction(0, "Stop timer", pendingIntent)
-                    .build()
-                notificationManager.notify(1, updatedNotification)
-                Timer.restTime.value = duration
-            }
-            Timer.restTime.value = 0
-            Log.i("TimerService", "Attempting to stop timer")
-            Timer.onTimerFinished()
-            Log.i("TimerService", "Timer stopped")
+            startRest(duration, applicationContext, pendingIntent)
             stopSelf()
         }
 
@@ -101,4 +88,33 @@ class TimerService: Service() {
         Log.d("TimerService","Service Stopped")
         super.onDestroy()
     }
+}
+
+suspend fun startRest(
+    timeDuration: Int,
+    applicationContext: Context,
+    pendingIntent: PendingIntent,
+) {
+    var duration = timeDuration
+    Timer.beginRest()
+    val notificationManager = NotificationManagerCompat.from(applicationContext)
+    while (duration > 0) {
+        delay(1.seconds)
+        duration--
+        if (ContextCompat.checkSelfPermission(
+            applicationContext, Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            val updatedNotification = NotificationCompat.Builder(applicationContext, "timer")
+                .setContentTitle("Workout Timer")
+                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setContentText("Time left: $duration sec")
+                .addAction(0, "Stop timer", pendingIntent)
+                .build()
+            notificationManager.notify(1, updatedNotification)
+        }
+        Timer.restTime.value = duration
+    }
+    Timer.restTime.value = 0
+    Timer.onTimerFinished()
 }
