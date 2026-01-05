@@ -1,9 +1,11 @@
 package com.example.chatapplication.data.repository.impl
 
 import android.util.Log
+import com.example.chatapplication.data.dto.RoutineExerciseDto
 import com.example.chatapplication.data.dto.UsersRoutineExercisesDto
 import com.example.chatapplication.data.repository.UsersRoutineExercisesRepository
 import com.example.chatapplication.domain.model.NetworkResult
+import com.example.chatapplication.domain.model.RoutineExercise
 import com.example.chatapplication.domain.model.UsersRoutineExercises
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
@@ -50,24 +52,27 @@ class UsersRoutineExercisesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateExerciseWithNewOrder(
-        exerciseId: String,
-        newOrder: Int,
-        routineId: String
+        routineId: String,
+        exercises: List<UsersRoutineExercises>
     ): NetworkResult<PostgrestResult> {
+        val routineExercises = exercises.mapIndexed { index, exercise ->
+            RoutineExerciseDto(
+                id = null,
+                routineId = routineId,
+                exerciseId = exercise.exerciseId,
+                orderIndex = index
+            )
+        }
+
         return try {
             val response = postgrest.from(ROUTINE_EXERCISE_TABLE)
-                .update (
-                    {
-                        set("orderindex", newOrder)
-                    }
-                ) {
-                    filter {
-                        eq("exerciseid", exerciseId)
-                        eq("routineid", routineId)
-                    }
+                .upsert(routineExercises) {
+                    onConflict = "routineid,exerciseid"
                 }
+            Log.i(TAG, "Successfully updated routine exercise")
             NetworkResult.Success(response)
         } catch (e: Exception) {
+            Log.e(TAG, "Failed to update routine exercises: ${e.message}")
             NetworkResult.Error(e.message)
         }
     }
