@@ -64,4 +64,22 @@ class EditRoutineViewModel @Inject constructor(
         }
         _exercises.value = updated
     }
+
+    // TODO: Add toast message indicating there was an error updating an exercise
+    fun updateExercisesForRoutine(
+        onCompleted: () -> Unit,
+    ) {
+        _isLoading.value = true
+        viewModelScope.launch {
+            _exercises.value.forEachIndexed { index, exercise ->
+                val response = userRoutinesExercisesRepository.updateExerciseWithNewOrder(
+                    routineId = routineArg.routineId,
+                    exerciseId = exercise.exerciseId,
+                    newOrder = index
+                )
+            }
+            _isLoading.value = false
+            onCompleted()
+        }
+    }
 }

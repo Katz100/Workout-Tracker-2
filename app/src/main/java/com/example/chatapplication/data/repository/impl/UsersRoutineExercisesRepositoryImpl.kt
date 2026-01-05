@@ -8,6 +8,7 @@ import com.example.chatapplication.domain.model.UsersRoutineExercises
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.postgrest.result.PostgrestResult
 import io.github.jan.supabase.postgrest.rpc
 import kotlinx.serialization.Serializable
 import javax.inject.Inject
@@ -22,11 +23,15 @@ data class GetUsersExercisesParams(
 class UsersRoutineExercisesRepositoryImpl @Inject constructor(
     private val postgrest: Postgrest,
     private val client: SupabaseClient,
-): UsersRoutineExercisesRepository{
+): UsersRoutineExercisesRepository {
+    companion object {
+        const val ROUTINE_EXERCISE_TABLE = "routine_exercise"
+        const val TAG = "UsersRoutineExerciseRepo"
+    }
     override suspend fun getUsersExercisesByRoutine(routineId: String): NetworkResult<List<UsersRoutineExercises>> {
         val currentUserId = client.auth.currentUserOrNull()?.id
             ?: return NetworkResult.Error("User does not exist")
-        Log.i("USERROUTINEEXERCISE", "Getting exercises by routine for: $currentUserId, routineId: $routineId")
+        Log.i(TAG, "Getting exercises by routine for: $currentUserId, routineId: $routineId")
 
         return try {
             val response = postgrest
@@ -41,6 +46,29 @@ class UsersRoutineExercisesRepositoryImpl @Inject constructor(
             NetworkResult.Success(response)
         } catch (e: Exception) {
             NetworkResult.Error("Unable to fetch user's exercises for the given routine: ${e.message}")
+        }
+    }
+
+    override suspend fun updateExerciseWithNewOrder(
+        exerciseId: String,
+        newOrder: Int,
+        routineId: String
+    ): NetworkResult<PostgrestResult> {
+        return try {
+            val response = postgrest.from(ROUTINE_EXERCISE_TABLE)
+                .update (
+                    {
+                        set("orderindex", newOrder)
+                    }
+                ) {
+                    filter {
+                        eq("exerciseid", exerciseId)
+                        eq("routineid", routineId)
+                    }
+                }
+            NetworkResult.Success(response)
+        } catch (e: Exception) {
+            NetworkResult.Error(e.message)
         }
     }
 

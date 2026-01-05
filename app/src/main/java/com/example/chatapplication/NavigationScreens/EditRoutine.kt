@@ -42,7 +42,7 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 @Composable
 fun EditRoutine(
     modifier: Modifier = Modifier,
-    onCancel: () -> Unit,
+    onDone: () -> Unit,
     viewModel: EditRoutineViewModel = hiltViewModel()
 ) {
     val hapticFeedback = LocalHapticFeedback.current
@@ -126,7 +126,7 @@ fun EditRoutine(
             ) {
                 CustomButton(
                     modifier = Modifier.width(120.dp),
-                    onClick = onCancel,
+                    onClick = onDone,
                     text = "Cancel",
                     textModifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
@@ -140,7 +140,7 @@ fun EditRoutine(
 
                 CustomButton(
                     modifier = Modifier.width(160.dp),
-                    onClick = {},
+                    onClick = { viewModel.updateExercisesForRoutine(onDone) },
                     text = "Save Routine",
                     textModifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
