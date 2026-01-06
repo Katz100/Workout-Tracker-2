@@ -215,6 +215,10 @@ fun NestedNav(
                 AddExercisesToNewRoutine(
                     routineName = args.name,
                     routineDesc = args.desc,
+                    onCompleted = {
+                        nestedNavController.popBackStack()
+                        nestedNavController.popBackStack()
+                    }
                 )
             }
             composable<Screen.Profile> {

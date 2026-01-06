@@ -11,6 +11,7 @@ import com.example.chatapplication.domain.model.Routine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,6 +29,9 @@ class AddExercisesToNewRoutineViewModel @Inject constructor(
     private val _checkedExercises = MutableStateFlow<List<Exercise>>(listOf())
     val checkExercises: StateFlow<List<Exercise>> = _checkedExercises
 
+    private val _isLoading = MutableStateFlow<Boolean>(true)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
     init {
         viewModelScope.launch {
             _usersExercises.collect {
@@ -37,6 +41,7 @@ class AddExercisesToNewRoutineViewModel @Inject constructor(
         viewModelScope.launch {
             val result = exerciseRepository.getAllExercises()
             _usersExercises.value = result.data ?: emptyList()
+            _isLoading.value = false
         }
     }
 
@@ -50,8 +55,12 @@ class AddExercisesToNewRoutineViewModel @Inject constructor(
         _checkedExercises.value.onEach { Log.d("ADDVIEWMODEL", "Unchecked exercise: ${it.name}") }
     }
 
-    fun addNewRoutine(routine: Routine) {
+    fun addNewRoutine(
+        routine: Routine,
+        onCompleted: () -> Unit,
+        ) {
         viewModelScope.launch {
+            _isLoading.value = true
             when (val result = routineRepository.createNewRoutine(routine)) {
                 is NetworkResult.Success -> {
                     val createdRoutine = result.data?.firstOrNull()
@@ -61,10 +70,13 @@ class AddExercisesToNewRoutineViewModel @Inject constructor(
                         val result = exerciseRepository.addExerciseToRoutine(id, item.id!!, index)
                         Log.d("ADDVIEWMODEL", "Adding exercise to routine result: $result")
                     }
+                    onCompleted()
+                    _isLoading.value = false
                 }
 
                 is NetworkResult.Error -> {
                     Log.e("ADDVIEWMODEL", "Failed to create routine: ${result.message}")
+                    _isLoading.value = false
                 }
 
                 is NetworkResult.Loading<*> -> TODO()

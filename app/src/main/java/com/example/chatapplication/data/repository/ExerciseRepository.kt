@@ -6,6 +6,7 @@ import com.example.chatapplication.domain.model.NetworkResult
 import io.github.jan.supabase.postgrest.result.PostgrestResult
 import kotlinx.coroutines.flow.Flow
 
+// TODO: Create addExercisesToRoutine method that upserts a list of exercises to improve performance
 interface ExerciseRepository {
    suspend fun addExercise(exerciseDto: ExerciseDto) : NetworkResult<PostgrestResult>
    suspend fun getAllExercises() : NetworkResult<List<Exercise>>

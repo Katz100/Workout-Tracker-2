@@ -1,6 +1,7 @@
 package com.example.chatapplication.NavigationScreens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -17,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,10 +35,13 @@ fun AddExercisesToNewRoutine(
     modifier: Modifier = Modifier,
     routineName: String,
     routineDesc: String,
+    onCompleted: () -> Unit,
     viewModel: AddExercisesToNewRoutineViewModel = hiltViewModel(),
 ) {
     val isEmpty = viewModel.isEmpty.collectAsState().value
     val exercises = viewModel.usersExercises.collectAsState().value
+    val isLoading = viewModel.isLoading.collectAsState().value
+    val context = LocalContext.current
 
     if (isEmpty) {
         Box(
@@ -44,6 +50,13 @@ fun AddExercisesToNewRoutine(
                 .wrapContentSize(Alignment.Center)
         ) {
             Text("No exercises found")
+        }
+    } else if (isLoading) {
+        Box (
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
         }
     } else {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -78,7 +91,10 @@ fun AddExercisesToNewRoutine(
                     .padding(16.dp),
                 onClick = {
                     val routine = Routine (name = routineName, description = routineDesc)
-                    viewModel.addNewRoutine(routine)
+                    viewModel.addNewRoutine(routine) {
+                        onCompleted()
+                        Toast.makeText(context, "Added exercises to new routine", Toast.LENGTH_SHORT).show()
+                    }
                 },
                 text = "Save Routine",
                 textModifier = Modifier.fillMaxWidth(),
