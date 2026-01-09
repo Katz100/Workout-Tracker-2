@@ -71,13 +71,10 @@ class EditRoutineViewModel @Inject constructor(
     ) {
         _isLoading.value = true
         viewModelScope.launch {
-            _exercises.value.forEachIndexed { index, exercise ->
-                val response = userRoutinesExercisesRepository.updateExerciseWithNewOrder(
-                    routineId = routineArg.routineId,
-                    exerciseId = exercise.exerciseId,
-                    newOrder = index
-                )
-            }
+            val response = userRoutinesExercisesRepository.updateExerciseWithNewOrder(
+                routineArg.routineId,
+                _exercises.value
+            )
             _isLoading.value = false
             onCompleted()
         }

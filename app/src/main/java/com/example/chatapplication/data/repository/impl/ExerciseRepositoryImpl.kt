@@ -32,7 +32,7 @@ class ExerciseRepositoryImpl @Inject constructor(
         const val ROUTINE_EXERCISE_TABLE = "routine_exercise"
     }
 
-    // TODO: update this value for when the user signs in with a new account
+    // TODO: update currentUserId value when the user signs in with a new account
     val currentUserId = client.auth.currentUserOrNull()?.id
         ?: ""
 

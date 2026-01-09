@@ -6,5 +6,8 @@ import io.github.jan.supabase.postgrest.result.PostgrestResult
 
 interface UsersRoutineExercisesRepository {
     suspend fun getUsersExercisesByRoutine(routineId: String): NetworkResult<List<UsersRoutineExercises>>
-    suspend fun updateExerciseWithNewOrder(exerciseId: String, newOrder: Int, routineId: String): NetworkResult<PostgrestResult>
+    suspend fun updateExerciseWithNewOrder(
+        routineId: String,
+        exercises: List<UsersRoutineExercises>
+    ): NetworkResult<PostgrestResult>
 }
