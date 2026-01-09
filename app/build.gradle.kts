@@ -96,8 +96,8 @@ dependencies {
 
 
     /* ---------- Networking (Ktor) ---------- */
-    implementation("io.ktor:ktor-client-cio:3.1.2")
-    implementation("io.ktor:ktor-client-websockets:3.1.2")
+    implementation("io.ktor:ktor-client-cio:3.3.3")
+    implementation("io.ktor:ktor-client-websockets:3.3.3")
 
     /* ---------- Serialization ---------- */
     implementation(libs.kotlinx.serialization.json)
