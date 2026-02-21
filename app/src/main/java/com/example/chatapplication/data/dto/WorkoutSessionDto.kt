@@ -9,12 +9,12 @@ data class WorkoutSessionDto(
     @SerialName("id")
     val id: String? = null,
 
-    @SerialName("userId")
+    @SerialName("userid")
     val userId: String,
 
-    @SerialName("routineId")
+    @SerialName("routineid")
     val routineId: String,
 
-    @SerialName("totalWorkoutTime")
+    @SerialName("totalworkouttime")
     val totalWorkoutTime: Int,
 )

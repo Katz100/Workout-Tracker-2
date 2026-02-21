@@ -17,9 +17,11 @@ import com.example.chatapplication.util.MyReceiver
 import com.example.chatapplication.util.Timer
 import com.example.chatapplication.util.TimerService
 import com.example.chatapplication.data.repository.UsersRoutineExercisesRepository
+import com.example.chatapplication.data.repository.WorkoutSessionRepository
 import com.example.chatapplication.domain.model.NetworkResult
 import com.example.chatapplication.domain.model.RoutineExercise
 import com.example.chatapplication.domain.model.UsersRoutineExercises
+import com.example.chatapplication.domain.model.WorkoutSession
 import com.example.chatapplication.util.TimerEvent
 import com.example.chatapplication.util.WorkoutTrackingService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,6 +38,7 @@ class WorkoutSessionViewModel @Inject constructor(
     @ApplicationContext val context: Context,
     savedStateHandle: SavedStateHandle,
     private val usersRoutineExercisesRepository: UsersRoutineExercisesRepository,
+    private val workoutSessionRepository: WorkoutSessionRepository,
     private val workoutTrackingService: WorkoutTrackingService,
 ) : ViewModel() {
 
@@ -94,6 +97,21 @@ class WorkoutSessionViewModel @Inject constructor(
                 }
             }
         }
+
+        viewModelScope.launch {
+            val workoutSession = WorkoutSession(
+                userId = "temp",
+                routineId = routineArg.routineId,
+                totalWorkoutTime = 0
+            )
+            val result = workoutSessionRepository.createNewWorkoutSession(workoutSession)
+
+            if (result !is NetworkResult.Error) {
+                Log.i("WorkoutSessionVM", "Added new session: ${result.data}")
+            } else {
+                Log.e("WorkoutSessionVM", "Error adding new workout session: ${result.message}")
+            }
+        }
     }
 
     fun onWeightUsedChanged(value: String) {
@@ -145,7 +163,9 @@ class WorkoutSessionViewModel @Inject constructor(
         mediaPlayer = null
     }
 
-    fun loadRoutine(routineId: String) {
+    fun loadRoutine(
+        routineId: String
+    ) {
         viewModelScope.launch {
             val result = usersRoutineExercisesRepository.getUsersExercisesByRoutine(routineId)
             if (result !is NetworkResult.Error) {

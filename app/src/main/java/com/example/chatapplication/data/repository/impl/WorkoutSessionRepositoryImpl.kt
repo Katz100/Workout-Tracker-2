@@ -16,7 +16,7 @@ class WorkoutSessionRepositoryImpl @Inject constructor(
     companion object {
         const val WORKOUT_SESSION_TABLE = "workout_session"
     }
-    override suspend fun createNewWorkoutSession(workoutSession: WorkoutSession): NetworkResult<List<WorkoutSession>> {
+    override suspend fun createNewWorkoutSession(workoutSession: WorkoutSession): NetworkResult<WorkoutSession> {
         val currentUserId = client.auth.currentUserOrNull()?.id
             ?: return NetworkResult.Error("User does not exist")
 
@@ -28,8 +28,8 @@ class WorkoutSessionRepositoryImpl @Inject constructor(
                 .insert(sessionToInsert.asDto()) {
                     select()
                 }
-                .decodeList<WorkoutSessionDto>()
-                .map { it.toDomain() }
+                .decodeSingle<WorkoutSessionDto>()
+                .toDomain()
              NetworkResult.Success(response)
         } catch (e: Exception) {
             NetworkResult.Error(e.message)
