@@ -9,6 +9,9 @@ data class WorkoutSessionDto(
     @SerialName("id")
     val id: String? = null,
 
+    @SerialName("created_at")
+    val createdAt: String? = null,
+
     @SerialName("userid")
     val userId: String,
 
