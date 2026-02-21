@@ -57,6 +57,9 @@ class WorkoutSessionViewModel @Inject constructor(
     private val _currentSet = MutableStateFlow<Int>(1)
     val currentSet: StateFlow<Int> = _currentSet
 
+    private val _weightUsed = MutableStateFlow<String>("")
+    val weightUsed: StateFlow<String> = _weightUsed
+
     private val _currentExercise = MutableStateFlow<UsersRoutineExercises>(
         UsersRoutineExercises(
             exerciseName = "Empty",
@@ -91,6 +94,10 @@ class WorkoutSessionViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun onWeightUsedChanged(value: String) {
+        _weightUsed.value = value
     }
 
     fun nextExercise(): String {

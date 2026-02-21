@@ -19,6 +19,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -55,6 +56,7 @@ fun WorkoutSession(
     val openSkipToExerciseDialog = remember { mutableStateOf(false) }
     val exercises = viewModel.usersExercises.collectAsState().value
     val currentExercise = viewModel.currentExercise.collectAsState().value
+    val weightUsed = viewModel.weightUsed.collectAsState().value
 
     if (isLoading) {
         Box(
@@ -129,6 +131,23 @@ fun WorkoutSession(
                 Text(text = exerciseReps.toString())
             }
 
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Weight (lbs)",
+                    modifier = Modifier.weight(1f),
+                )
+                TextField(
+                    modifier = Modifier.weight(1f),
+                    value = weightUsed,
+                    onValueChange = {
+                        viewModel.onWeightUsedChanged(it)
+                    }
+                )
+            }
+
             Spacer(modifier = Modifier.height(12.dp))
 
             Row(
@@ -189,16 +208,30 @@ fun WorkoutSession(
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                CustomButton(
-                    onClick = { viewModel.onNextSet() },
-                    modifier = Modifier
-                        .width(150.dp)
-                        .padding(5.dp),
-                    text = "Next Set",
-                    textModifier = Modifier,
-                    textAlign = TextAlign.Center,
-                    fontSize = 20.sp,
-                )
+
+                Column {
+                    CustomButton(
+                        onClick = { viewModel.onNextSet() },
+                        modifier = Modifier
+                            .width(150.dp)
+                            .padding(5.dp),
+                        text = "Next Set",
+                        textModifier = Modifier,
+                        textAlign = TextAlign.Center,
+                        fontSize = 20.sp,
+                    )
+
+                    CustomButton(
+                        onClick = {  },
+                        modifier = Modifier
+                            .width(150.dp)
+                            .padding(5.dp),
+                        text = "Log weight",
+                        textModifier = Modifier,
+                        textAlign = TextAlign.Center,
+                        fontSize = 20.sp,
+                    )
+                }
             }
 
 
