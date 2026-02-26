@@ -17,6 +17,7 @@ import com.example.chatapplication.util.MyReceiver
 import com.example.chatapplication.util.Timer
 import com.example.chatapplication.util.TimerService
 import com.example.chatapplication.data.repository.UsersRoutineExercisesRepository
+import com.example.chatapplication.data.repository.WorkoutLogRepository
 import com.example.chatapplication.data.repository.WorkoutSessionRepository
 import com.example.chatapplication.domain.model.NetworkResult
 import com.example.chatapplication.domain.model.RoutineExercise
@@ -39,6 +40,7 @@ class WorkoutSessionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val usersRoutineExercisesRepository: UsersRoutineExercisesRepository,
     private val workoutSessionRepository: WorkoutSessionRepository,
+    private val workoutLogRepository: WorkoutLogRepository,
     private val workoutTrackingService: WorkoutTrackingService,
 ) : ViewModel() {
 
@@ -247,5 +249,9 @@ class WorkoutSessionViewModel @Inject constructor(
             }
             _currentSet.value = 1
         }
+    }
+
+    fun logWeight() {
+
     }
 }
