@@ -7,6 +7,7 @@ import com.example.chatapplication.data.repository.MessageRepository
 import com.example.chatapplication.data.repository.ProfileRepository
 import com.example.chatapplication.data.repository.RoutineRepository
 import com.example.chatapplication.data.repository.UsersRoutineExercisesRepository
+import com.example.chatapplication.data.repository.WorkoutLogRepository
 import com.example.chatapplication.data.repository.WorkoutSessionRepository
 import com.example.chatapplication.data.repository.impl.AuthenticationRepositoryImpl
 import com.example.chatapplication.data.repository.impl.ConversationRepositoryImpl
@@ -15,6 +16,7 @@ import com.example.chatapplication.data.repository.impl.MessageRepositoryImpl
 import com.example.chatapplication.data.repository.impl.ProfileRepositoryImpl
 import com.example.chatapplication.data.repository.impl.RoutineRepositoryImpl
 import com.example.chatapplication.data.repository.impl.UsersRoutineExercisesRepositoryImpl
+import com.example.chatapplication.data.repository.impl.WorkoutLogRepositoryImpl
 import com.example.chatapplication.data.repository.impl.WorkoutSessionRepositoryImpl
 import dagger.Binds
 import dagger.Module
@@ -51,4 +53,6 @@ abstract class RepositoryModule {
     @Binds
     abstract fun bindWorkoutSessionRepository(impl: WorkoutSessionRepositoryImpl) : WorkoutSessionRepository
 
+    @Binds
+    abstract fun bindWorkoutLogRepository(impl: WorkoutLogRepositoryImpl): WorkoutLogRepository
 }

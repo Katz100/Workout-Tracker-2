@@ -8,18 +8,18 @@ data class WorkoutLogDto(
     @SerialName("id")
     val id: String? = null,
 
-    @SerialName("sessionId")
+    @SerialName("sessionid")
     val sessionId: String,
 
-    @SerialName("exerciseId")
+    @SerialName("exerciseid")
     val exerciseId: String,
 
     @SerialName("set")
     val set: Int,
 
-    @SerialName("weightUsed")
+    @SerialName("weightused")
     val weightUsed: Int? = null,
 
-    @SerialName("createdAt")
+    @SerialName("createdat")
     val createdAt: String? = null
 )

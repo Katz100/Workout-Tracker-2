@@ -76,10 +76,12 @@ class WorkoutSessionViewModel @Inject constructor(
     )
     val currentExercise: StateFlow<UsersRoutineExercises> = _currentExercise
 
-    private var mediaPlayer: MediaPlayer? = null
-
     private val _workoutFinished = MutableStateFlow<Boolean>(false)
     val workoutFinished: StateFlow<Boolean> = _workoutFinished
+
+    private var mediaPlayer: MediaPlayer? = null
+
+    private lateinit var currentSession: WorkoutSession
 
     init {
         loadRoutine(routineArg.routineId)
@@ -105,6 +107,10 @@ class WorkoutSessionViewModel @Inject constructor(
                 totalWorkoutTime = 0
             )
             val result = workoutSessionRepository.createNewWorkoutSession(workoutSession)
+
+            if (result.data != null) {
+                currentSession = result.data
+            }
 
             if (result !is NetworkResult.Error) {
                 Log.i("WorkoutSessionVM", "Added new session: ${result.data}")
@@ -217,6 +223,12 @@ class WorkoutSessionViewModel @Inject constructor(
                 workoutTrackingService.endSession()
                 _workoutFinished.value = true
                 Log.i("WorkoutSessionVM", "Workout finished")
+                viewModelScope.launch {
+                    workoutSessionRepository.updateTotalWorkoutTimeForSession(
+                        currentSession.id.toString(),
+                        workoutTrackingService.getTotalDurationMinutes().toInt()
+                    )
+                }
                 // temporary toast
                 Toast.makeText(context, "Time spent workout out: ${workoutTrackingService.getTotalDurationMinutes()}", Toast.LENGTH_SHORT).show()
                 workoutTrackingService.reset()
