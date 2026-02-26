@@ -2,6 +2,7 @@ package com.example.chatapplication.NavigationScreens
 
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -222,7 +224,9 @@ fun WorkoutSession(
                     )
 
                     CustomButton(
-                        onClick = {  },
+                        onClick = {
+                            viewModel.logWeight()
+                        },
                         modifier = Modifier
                             .width(150.dp)
                             .padding(5.dp),

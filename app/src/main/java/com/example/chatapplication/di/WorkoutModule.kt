@@ -21,6 +21,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 object WorkoutModule {
+
+    // TODO: Remove unneeded injection in WorkoutModule
     @Singleton
     @Provides
     fun provideNotificationBuilder2(

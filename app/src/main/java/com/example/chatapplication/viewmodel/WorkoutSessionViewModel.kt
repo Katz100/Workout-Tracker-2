@@ -22,6 +22,7 @@ import com.example.chatapplication.data.repository.WorkoutSessionRepository
 import com.example.chatapplication.domain.model.NetworkResult
 import com.example.chatapplication.domain.model.RoutineExercise
 import com.example.chatapplication.domain.model.UsersRoutineExercises
+import com.example.chatapplication.domain.model.WorkoutLog
 import com.example.chatapplication.domain.model.WorkoutSession
 import com.example.chatapplication.util.TimerEvent
 import com.example.chatapplication.util.WorkoutTrackingService
@@ -252,6 +253,21 @@ class WorkoutSessionViewModel @Inject constructor(
     }
 
     fun logWeight() {
+        val logToInsert = WorkoutLog(
+            id = null,
+            sessionId = currentSession.id.toString(),
+            exerciseId = _currentExercise.value.exerciseId,
+            set = _currentSet.value,
+            weightUsed = _weightUsed.value.toInt(),
+            createdAt = null
+        )
 
+        viewModelScope.launch {
+            val response = workoutLogRepository.logWeightForSession(logToInsert)
+
+            if (response !is NetworkResult.Error) {
+                Toast.makeText(context, "Succesfully logged weight", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
