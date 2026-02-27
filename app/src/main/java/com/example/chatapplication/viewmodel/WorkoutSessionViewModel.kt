@@ -266,7 +266,9 @@ class WorkoutSessionViewModel @Inject constructor(
             val response = workoutLogRepository.logWeightForSession(logToInsert)
 
             if (response !is NetworkResult.Error) {
-                Toast.makeText(context, "Succesfully logged weight", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Successfully logged weight", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Error logging weight: ${response.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
