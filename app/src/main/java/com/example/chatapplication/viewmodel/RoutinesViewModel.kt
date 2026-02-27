@@ -27,17 +27,23 @@ class RoutinesViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _usersRoutines.collect {
-                if (it.isEmpty()) {
-                    _isEmpty.value = true
-                } else {
-                    _isEmpty.value = false
-                }
+                _isEmpty.value = it.isEmpty()
             }
         }
+        /*
         viewModelScope.launch {
             routineRepository.routineFlow.collect { routines ->
                 Log.d("ROUTINEVIEWMODEL", "Collected routines: $routines")
                 _usersRoutines.value = routines
+            }
+        }
+         */
+
+        viewModelScope.launch {
+            val response = routineRepository.getAllRoutines()
+
+            if (response !is NetworkResult.Error && response.data != null) {
+                _usersRoutines.value = response.data
             }
         }
     }
@@ -47,7 +53,11 @@ class RoutinesViewModel @Inject constructor(
             val response = routineRepository.deleteRoutine(routine)
 
             if (response is NetworkResult.Success) {
-                _usersRoutines.value = routineRepository.getAllRoutines().data!!
+                val routines = routineRepository.getAllRoutines().data
+
+                if (routines != null) {
+                    _usersRoutines.value = routines
+                }
             }
         }
     }
