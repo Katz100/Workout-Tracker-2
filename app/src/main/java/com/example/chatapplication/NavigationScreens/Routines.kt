@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.chatapplication.Components.RefreshCard
 import com.example.chatapplication.Components.RoutineCard
 import com.example.chatapplication.domain.model.Routine
 import com.example.chatapplication.viewmodel.RoutinesViewModel
@@ -32,7 +33,7 @@ fun Routines(
 
     Column(modifier = modifier) {
         if (shouldReload) {
-            Text("Should refresh")
+            RefreshCard()
         }
         PullToRefreshBox(
             isRefreshing = isRefreshing,
