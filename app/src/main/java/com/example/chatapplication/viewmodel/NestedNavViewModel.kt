@@ -8,5 +8,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NestedNavViewModel @Inject constructor(): ViewModel() {
+    private val _shouldRefreshRoutines = MutableStateFlow<Boolean>(false)
+    val shouldRefreshRoutines: StateFlow<Boolean> = _shouldRefreshRoutines
 
+    fun setShouldRefreshRoutines(value: Boolean) {
+        _shouldRefreshRoutines.value = value
+    }
 }

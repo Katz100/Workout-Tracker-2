@@ -55,7 +55,9 @@ class RoutinesViewModel @Inject constructor(
         }
     }
 
-    fun refreshRoutines() {
+    fun refreshRoutines(
+        onDone: () -> Unit,
+    ) {
         viewModelScope.launch {
             _isRefreshing.value = true
             val response = routineRepository.getAllRoutines()
@@ -65,8 +67,10 @@ class RoutinesViewModel @Inject constructor(
                 if (routines != null) {
                     _usersRoutines.value = routines
                 }
+                onDone()
             }
             _isRefreshing.value = false
+
         }
     }
 }

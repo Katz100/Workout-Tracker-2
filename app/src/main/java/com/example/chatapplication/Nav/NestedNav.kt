@@ -24,6 +24,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -68,6 +69,7 @@ fun NestedNav(
     val context = LocalContext.current
     val navEvent = remember { NavEvent(context) }
     val openAlertDialog = remember { mutableStateOf(false) }
+    val shouldRefreshRoutines = nestedNavViewModel.shouldRefreshRoutines.collectAsState().value
 
     DisposableEffect(nestedNavController, navEvent) {
         nestedNavController.addOnDestinationChangedListener(navEvent)
@@ -173,7 +175,12 @@ fun NestedNav(
                     onEditRoutine = {
                         Log.i("NestedNav", "Edit routine: $it")
                         nestedNavController.navigate(Screen.EditRoutine(it.id.toString()))
-                    }
+                    },
+                    shouldReload = shouldRefreshRoutines,
+                    onDoneReloading = {
+                        nestedNavViewModel.setShouldRefreshRoutines(false)
+                    },
+                    modifier = Modifier.fillMaxSize()
                 )
             }
             composable<Screen.WorkoutSession> { backStackEntry ->
@@ -216,6 +223,7 @@ fun NestedNav(
                     routineName = args.name,
                     routineDesc = args.desc,
                     onCompleted = {
+                        nestedNavViewModel.setShouldRefreshRoutines(true)
                         nestedNavController.popBackStack()
                         nestedNavController.popBackStack()
                     }
