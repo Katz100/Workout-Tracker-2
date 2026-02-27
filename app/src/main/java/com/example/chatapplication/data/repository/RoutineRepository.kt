@@ -10,5 +10,7 @@ interface RoutineRepository {
     suspend fun createNewRoutine(routine: Routine): NetworkResult<List<Routine>>
     suspend fun getAllRoutines(): NetworkResult<List<Routine>>
     suspend fun deleteRoutine(routine: Routine): NetworkResult<PostgrestResult>
+
+    @Deprecated("Routines will no longer actively listen to changes in database")
     val routineFlow: Flow<List<Routine>>
 }

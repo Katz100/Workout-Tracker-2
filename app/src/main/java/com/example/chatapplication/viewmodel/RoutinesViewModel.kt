@@ -1,12 +1,9 @@
 package com.example.chatapplication.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatapplication.data.dto.RoutineDto
 import com.example.chatapplication.data.repository.RoutineRepository
-import com.example.chatapplication.domain.model.Exercise
 import com.example.chatapplication.domain.model.NetworkResult
 import com.example.chatapplication.domain.model.Routine
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +18,12 @@ class RoutinesViewModel @Inject constructor(
     private val _usersRoutines = MutableStateFlow<List<Routine>>(listOf())
     val usersRoutines: StateFlow<List<Routine>> = _usersRoutines
 
+    @Deprecated("Remove in favor of _isRefreshing")
     private val _isEmpty = MutableStateFlow<Boolean>(true)
     val isEmpty: StateFlow<Boolean> = _isEmpty
+
+    private val _isRefreshing = MutableStateFlow<Boolean>(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
     init {
         viewModelScope.launch {
@@ -30,14 +31,6 @@ class RoutinesViewModel @Inject constructor(
                 _isEmpty.value = it.isEmpty()
             }
         }
-        /*
-        viewModelScope.launch {
-            routineRepository.routineFlow.collect { routines ->
-                Log.d("ROUTINEVIEWMODEL", "Collected routines: $routines")
-                _usersRoutines.value = routines
-            }
-        }
-         */
 
         viewModelScope.launch {
             val response = routineRepository.getAllRoutines()
@@ -59,6 +52,21 @@ class RoutinesViewModel @Inject constructor(
                     _usersRoutines.value = routines
                 }
             }
+        }
+    }
+
+    fun refreshRoutines() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            val response = routineRepository.getAllRoutines()
+
+            if (response !is NetworkResult.Error) {
+                val routines = response.data
+                if (routines != null) {
+                    _usersRoutines.value = routines
+                }
+            }
+            _isRefreshing.value = false
         }
     }
 }
