@@ -7,13 +7,17 @@ import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 
-class NavEvent(private val context: Context): NavController.OnDestinationChangedListener {
+class NavEvent(
+    private val context: Context,
+    private val onRouteChanged: (String?) -> Unit,
+): NavController.OnDestinationChangedListener {
     override fun onDestinationChanged(
         controller: NavController,
         destination: NavDestination,
         arguments: Bundle?
     ) {
-        Log.i("NavEvent", "Navigation changed. controller: ${controller.context}, destination route: ${destination.route}")
+        val route = destination.route
+        onRouteChanged(route)
         val intent = Intent(context, TimerService::class.java)
         context.stopService(intent)
     }

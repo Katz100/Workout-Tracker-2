@@ -24,6 +24,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,20 +55,24 @@ import com.example.chatapplication.NavigationScreens.WorkoutSummary
 import com.example.chatapplication.util.NavEvent
 import com.example.chatapplication.viewmodel.NestedNavViewModel
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NestedNav(
     rootNavController: NavHostController,
     nestedNavViewModel: NestedNavViewModel = hiltViewModel()
 ) {
+
     val currentDestination = rootNavController.currentBackStackEntryAsState().value?.destination
     val nestedNavController = rememberNavController()
     val currentRoute = nestedNavController.currentBackStackEntryAsState().value?.destination?.route
     val isTopLevel = currentRoute in Screen.topLevelScreens
     val screenTitle = Screen.getScreenTitle(currentRoute)
     val context = LocalContext.current
-    val navEvent = remember { NavEvent(context) }
+    val navEvent = remember {
+        NavEvent(context.applicationContext) { route ->
+            nestedNavViewModel.onRouteChanged(route)
+        }
+    }
     val openAlertDialog = remember { mutableStateOf(false) }
     val shouldRefreshRoutines = nestedNavViewModel.shouldRefreshRoutines.collectAsState().value
 
@@ -271,7 +276,7 @@ fun NavController.condPopBackStack(
     onBlocked: () -> Unit,
 ) {
     if (route == "Workout Session") {
-        Log.i("NESTEDNAV","Attempted to pop workout session")
+        Log.i("NESTEDNAV", "Attempted to pop workout session")
         onBlocked()
     } else {
         Log.i("NESTEDNAV", "pop")
