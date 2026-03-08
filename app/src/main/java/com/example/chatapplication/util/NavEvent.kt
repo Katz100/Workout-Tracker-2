@@ -9,15 +9,12 @@ import androidx.navigation.NavDestination
 
 class NavEvent(
     private val context: Context,
-    private val onRouteChanged: (String?) -> Unit,
 ): NavController.OnDestinationChangedListener {
     override fun onDestinationChanged(
         controller: NavController,
         destination: NavDestination,
         arguments: Bundle?
     ) {
-        val route = destination.route
-        onRouteChanged(route)
         val intent = Intent(context, TimerService::class.java)
         context.stopService(intent)
     }

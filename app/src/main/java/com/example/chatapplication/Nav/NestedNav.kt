@@ -68,11 +68,7 @@ fun NestedNav(
     val isTopLevel = currentRoute in Screen.topLevelScreens
     val screenTitle = Screen.getScreenTitle(currentRoute)
     val context = LocalContext.current
-    val navEvent = remember {
-        NavEvent(context.applicationContext) { route ->
-            nestedNavViewModel.onRouteChanged(route)
-        }
-    }
+    val navEvent = remember { NavEvent(context) }
     val openAlertDialog = remember { mutableStateOf(false) }
     val shouldRefreshRoutines = nestedNavViewModel.shouldRefreshRoutines.collectAsState().value
 
