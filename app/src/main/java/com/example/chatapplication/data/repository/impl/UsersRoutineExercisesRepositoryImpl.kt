@@ -5,22 +5,14 @@ import com.example.chatapplication.data.dto.RoutineExerciseDto
 import com.example.chatapplication.data.dto.UsersRoutineExercisesDto
 import com.example.chatapplication.data.repository.UsersRoutineExercisesRepository
 import com.example.chatapplication.domain.model.NetworkResult
-import com.example.chatapplication.domain.model.RoutineExercise
 import com.example.chatapplication.domain.model.UsersRoutineExercises
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.result.PostgrestResult
 import io.github.jan.supabase.postgrest.rpc
-import kotlinx.serialization.Serializable
 import javax.inject.Inject
 
-
-@Serializable
-data class GetUsersExercisesParams(
-    val user_id: String,
-    val routine_id: String
-)
 
 class UsersRoutineExercisesRepositoryImpl @Inject constructor(
     private val postgrest: Postgrest,
