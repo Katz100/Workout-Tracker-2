@@ -58,9 +58,8 @@ fun NestedNav(
     rootNavController: NavHostController,
     nestedNavViewModel: NestedNavViewModel = hiltViewModel()
 ) {
-
-    val currentDestination = rootNavController.currentBackStackEntryAsState().value?.destination
     val nestedNavController = rememberNavController()
+    val currentDestination = nestedNavController.currentBackStackEntryAsState().value?.destination
     val currentRoute = nestedNavController.currentBackStackEntryAsState().value?.destination?.route
     val isTopLevel = currentRoute in Screen.topLevelScreens
     val screenTitle = Screen.getScreenTitle(currentRoute)
