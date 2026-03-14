@@ -1,9 +1,7 @@
 package com.example.chatapplication.viewmodel
 
-import com.example.chatapplication.R
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
@@ -13,22 +11,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.chatapplication.Nav.Screen
-import com.example.chatapplication.util.MyReceiver
 import com.example.chatapplication.util.Timer
 import com.example.chatapplication.util.TimerService
 import com.example.chatapplication.data.repository.UsersRoutineExercisesRepository
 import com.example.chatapplication.data.repository.WorkoutLogRepository
 import com.example.chatapplication.data.repository.WorkoutSessionRepository
 import com.example.chatapplication.domain.model.NetworkResult
-import com.example.chatapplication.domain.model.RoutineExercise
 import com.example.chatapplication.domain.model.UsersRoutineExercises
 import com.example.chatapplication.domain.model.WorkoutLog
 import com.example.chatapplication.domain.model.WorkoutSession
+import com.example.chatapplication.util.MyMediaPlayer
 import com.example.chatapplication.util.TimerEvent
 import com.example.chatapplication.util.WorkoutTrackingService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -82,7 +78,7 @@ class WorkoutSessionViewModel @Inject constructor(
     private val _workoutFinished = MutableStateFlow<Boolean>(false)
     val workoutFinished: StateFlow<Boolean> = _workoutFinished
 
-    private var mediaPlayer: MediaPlayer? = null
+    private val mediaPlayer: MyMediaPlayer = MyMediaPlayer(context)
 
     private lateinit var currentSession: WorkoutSession
 
@@ -136,13 +132,7 @@ class WorkoutSessionViewModel @Inject constructor(
     }
 
     fun playSound() {
-        mediaPlayer?.release()
-        mediaPlayer = MediaPlayer.create(context, R.raw.beep2)
-        mediaPlayer?.setOnCompletionListener {
-            it.release()
-            mediaPlayer = null
-        }
-        mediaPlayer?.start()
+        mediaPlayer.playSound()
     }
 
     fun stopTimer() {
@@ -168,8 +158,7 @@ class WorkoutSessionViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        mediaPlayer?.release()
-        mediaPlayer = null
+        mediaPlayer.releaseMedia()
     }
 
     fun loadRoutine(
