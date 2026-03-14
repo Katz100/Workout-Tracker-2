@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "ChatApplication"
 include(":app")
- 
+include(":app:feature-routine")
